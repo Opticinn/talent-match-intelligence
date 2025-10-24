@@ -1,0 +1,22 @@
+version: 2
+sources:
+  - name: raw
+    schema: raw
+    description: "Landing zone dari Supabase Studio import CSV"
+    tables:
+      - name: employees
+      - name: performance_yearly
+      - name: profiles_psych
+      - name: papi_scores
+      - name: strengths
+      - name: competencies_yearly
+      - name: dim_competency_pillars
+      - name: dim_departments
+      - name: dim_directorates
+      - name: dim_divisions
+      - name: dim_education
+      - name: dim_grades
+      - name: dim_majors
+      - name: dim_positions
+
+      

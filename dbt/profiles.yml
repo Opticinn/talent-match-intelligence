@@ -1,0 +1,13 @@
+talent_match_intel:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost
+      user: postgres
+      password: postgres
+      port: 54322
+      dbname: postgres
+      schema: staging
+      threads: 4
+      keepalives_idle: 0

@@ -1,0 +1,76 @@
+version: 2
+
+models:
+  - name: stg_employees
+    description: "Employees (cleaned & typed) dari raw.employees"
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]
+      - name: years_of_service_months
+        description: "Masa kerja (bulan)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              inclusive: true
+
+  - name: stg_performance_yearly
+    description: "Annual performance ratings (1–5)"
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: year
+        tests: [not_null]
+      - name: rating
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+              inclusive: true
+
+  - name: stg_profiles_psych
+    description: "Psychometric & cognitive profile per employee"
+    columns:
+      - name: employee_id
+        tests: [not_null, unique]
+      - name: mbti
+        description: "MBTI standardized (opsional null untuk nilai tidak valid)"
+
+  - name: stg_papi_scores
+    description: "PAPI Kostick scale scores 1–9"
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: scale_code
+        tests: [not_null]
+      - name: score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 9
+              inclusive: true
+
+  - name: stg_strengths
+    description: "CliftonStrengths top ranks"
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: rank
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 14
+              inclusive: true
+
+  - name: stg_competencies_yearly
+    description: "Historical competency pillars (scores 1–5)"
+    columns:
+      - name: employee_id
+        tests: [not_null]
+      - name: pillar_code
+        tests: [not_null]
+      - name: score
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+              inclusive: true

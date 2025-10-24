@@ -1,0 +1,32 @@
+name: 'talent_match_intel'
+version: '1.0.0'
+config-version: 2
+
+# Harus SAMA persis dengan key di profiles.yml di atas
+profile: 'talent_match_intel'
+
+model-paths: ['models']
+analysis-paths: ['analyses']
+test-paths: ['tests']
+seed-paths: ['seeds']
+macro-paths: ['macros']
+snapshot-paths: ['snapshots']
+
+target-path: 'target'
+clean-targets: ['target', 'dbt_packages']
+
+vars:
+  perf_year: 2024
+  high_rating: 5
+
+
+models:
+  talent_match_intel:
+    +materialized: view
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts
+
+
+

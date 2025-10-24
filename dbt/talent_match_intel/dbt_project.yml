@@ -1,0 +1,25 @@
+name: 'talent_match_intel'
+version: '1.0.0'
+config-version: 2
+
+# PENTING: harus sama persis dengan key teratas di profiles.yml
+profile: 'talent_match_intel'
+
+model-paths: ['models']
+analysis-paths: ['analyses']
+test-paths: ['tests']
+seed-paths: ['seeds']
+macro-paths: ['macros']
+snapshot-paths: ['snapshots']
+
+target-path: 'target'
+clean-targets: ['target', 'dbt_packages']
+
+models:
+  talent_match_intel:
+    +materialized: view
+    staging:
+      +schema: staging
+    marts:
+      +schema: marts
+

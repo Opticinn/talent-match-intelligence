@@ -1,0 +1,35 @@
+version: 2
+models:
+  - name: final_match
+    description: "Skor akhir (0–100) per kandidat"
+    columns:
+      - name: employee_id
+        # tests: [not_null, unique]  # ← komentari ini, kita ganti custom SQL tests
+      - name: final_match_rate
+        # tests:
+        #   - dbt_utils.accepted_range:
+        #       min_value: 0
+        #       max_value: 100
+        #       inclusive: true
+
+  - name: tv_match
+    description: "Match rate per-variable"
+    columns:
+      - name: employee_id
+        # tests: [not_null]
+      - name: tv_name
+        # tests: [not_null]
+      - name: tv_match_rate
+        # tests:
+        #   - dbt_utils.accepted_range:
+        #       min_value: 0
+        #       max_value: 100
+        #       inclusive: true
+
+  - name: tgv_match
+    description: "Agregasi match rate TGV"
+    columns:
+      - name: employee_id
+        # tests: [not_null]
+      - name: tgv_name
+        # tests: [not_null]

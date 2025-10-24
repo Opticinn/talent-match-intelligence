@@ -1,0 +1,184 @@
+[0m15:17:45.684925 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292F0118E50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292F37AFE10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292F374BD90>]}
+
+
+============================== 15:17:45.689932 | de2cc755-3f98-4602-971e-5a94d5c750f6 ==============================
+[0m15:17:45.689932 [info ] [MainThread]: Running with dbt=1.10.13
+[0m15:17:45.690934 [debug] [MainThread]: running dbt with arguments {'no_print': 'None', 'cache_selected_only': 'False', 'write_json': 'True', 'log_format': 'default', 'use_colors': 'True', 'warn_error': 'None', 'indirect_selection': 'eager', 'partial_parse': 'True', 'fail_fast': 'False', 'send_anonymous_usage_stats': 'True', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_path': 'logs', 'version_check': 'True', 'use_experimental_parser': 'False', 'introspect': 'True', 'quiet': 'False', 'empty': 'None', 'log_cache_events': 'False', 'debug': 'False', 'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'invocation_command': 'dbt init talent_match_intel', 'printer_width': '80', 'target_path': 'None'}
+[0m15:17:45.708610 [debug] [MainThread]: Starter project path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Lib\site-packages\dbt\include\starter_project
+[0m15:17:45.773292 [info ] [MainThread]: 
+Your new dbt project "talent_match_intel" was created!
+
+For more information on how to configure the profiles.yml file,
+please consult the dbt documentation here:
+
+  https://docs.getdbt.com/docs/configure-your-profile
+
+One more thing:
+
+Need help? Don't hesitate to reach out to us via GitHub issues or on Slack:
+
+  https://community.getdbt.com/
+
+Happy modeling!
+
+[0m15:17:45.774219 [info ] [MainThread]: Setting up your profile.
+[0m15:20:13.133707 [info ] [MainThread]: Profile talent_match_intel written to C:\Users\Rafli\.dbt\profiles.yml using target's profile_template.yml and your supplied values. Run 'dbt debug' to validate the connection.
+[0m15:20:13.134716 [debug] [MainThread]: Command `dbt init` succeeded at 15:20:13.134716 after 147.52 seconds
+[0m15:20:13.135722 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292ECBAA1D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292F3749A10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000292ECBEF110>]}
+[0m15:20:13.135722 [debug] [MainThread]: Flushing usage events
+[0m15:20:15.224410 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:20:27.063683 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB0911F950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB0911DA10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB0911FD90>]}
+
+
+============================== 15:20:27.068088 | da6587f6-8114-4860-9b8f-b2412206f86e ==============================
+[0m15:20:27.068088 [info ] [MainThread]: Running with dbt=1.10.13
+[0m15:20:27.069090 [debug] [MainThread]: running dbt with arguments {'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'cache_selected_only': 'False', 'log_format': 'default', 'invocation_command': 'dbt debug', 'target_path': 'None', 'warn_error': 'None', 'indirect_selection': 'eager', 'fail_fast': 'False', 'partial_parse': 'True', 'send_anonymous_usage_stats': 'True', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptionsV2(error=[], warn=[], silence=[])', 'log_path': 'logs', 'use_experimental_parser': 'False', 'version_check': 'True', 'quiet': 'False', 'introspect': 'True', 'empty': 'None', 'log_cache_events': 'False', 'debug': 'False', 'no_print': 'None', 'use_colors': 'True', 'printer_width': '80', 'write_json': 'True'}
+[0m15:20:27.084629 [info ] [MainThread]: dbt version: 1.10.13
+[0m15:20:27.085618 [info ] [MainThread]: python version: 3.11.5
+[0m15:20:27.085618 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:20:27.086624 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:20:27.140982 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\.dbt
+[0m15:20:27.141973 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\.dbt\profiles.yml
+[0m15:20:27.141973 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:20:27.142973 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:20:27.143496 [debug] [MainThread]: Command `dbt debug` failed at 15:20:27.143496 after 0.15 seconds
+[0m15:20:27.143496 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB091258D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB09124150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002AB091CBE90>]}
+[0m15:20:27.143496 [debug] [MainThread]: Flushing usage events
+[0m15:20:28.459896 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:24:51.049605 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D7B090>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D7B510>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D7B110>]}
+
+
+============================== 15:24:51.054132 | 16e03177-b5e9-4e53-b3d7-1e38272d0ef6 ==============================
+[0m15:24:51.054132 [info ] [MainThread]: Running with dbt=1.9.1
+[0m15:24:51.054132 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'debug': 'False', 'log_path': 'logs', 'fail_fast': 'False', 'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'introspect': 'True', 'static_parser': 'True', 'invocation_command': 'dbt debug', 'target_path': 'None', 'log_format': 'default', 'send_anonymous_usage_stats': 'True'}
+[0m15:24:51.071350 [info ] [MainThread]: dbt version: 1.9.1
+[0m15:24:51.072349 [info ] [MainThread]: python version: 3.11.5
+[0m15:24:51.072349 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:24:51.073359 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:24:51.125470 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\.dbt
+[0m15:24:51.125470 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\.dbt\profiles.yml
+[0m15:24:51.126476 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:24:51.126476 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:24:51.127981 [debug] [MainThread]: Command `dbt debug` failed at 15:24:51.127981 after 0.14 seconds
+[0m15:24:51.127981 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D7A4D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D7ACD0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000026512D78210>]}
+[0m15:24:51.128986 [debug] [MainThread]: Flushing usage events
+[0m15:24:52.704340 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:27:26.935270 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002299469D750>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000229946CB050>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000229946C9890>]}
+
+
+============================== 15:27:26.938691 | 35b5eaeb-b934-4bb8-9071-ea182ac71675 ==============================
+[0m15:27:26.938691 [info ] [MainThread]: Running with dbt=1.9.1
+[0m15:27:26.939689 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'write_json': 'True', 'log_cache_events': 'False', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'log_path': 'logs', 'debug': 'False', 'fail_fast': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'invocation_command': 'dbt debug', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'target_path': 'None', 'introspect': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m15:27:26.954496 [info ] [MainThread]: dbt version: 1.9.1
+[0m15:27:26.954496 [info ] [MainThread]: python version: 3.11.5
+[0m15:27:26.955491 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:27:26.955491 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:27:27.010097 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\.dbt
+[0m15:27:27.011097 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\.dbt\profiles.yml
+[0m15:27:27.011097 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:27:27.012097 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:27:27.013099 [debug] [MainThread]: Command `dbt debug` failed at 15:27:27.012097 after 0.14 seconds
+[0m15:27:27.013099 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000229946B6950>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000229946B6990>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x00000229946C8210>]}
+[0m15:27:27.013099 [debug] [MainThread]: Flushing usage events
+[0m15:27:28.955990 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:28:19.823355 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8CCF2E550>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8CCF5E210>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8CCF76F90>]}
+
+
+============================== 15:28:19.826354 | c3c378a5-55fc-4dda-a334-25c2cc95ccaf ==============================
+[0m15:28:19.826354 [info ] [MainThread]: Running with dbt=1.9.1
+[0m15:28:19.827576 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'warn_error': 'None', 'version_check': 'True', 'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'log_path': 'logs', 'debug': 'False', 'fail_fast': 'False', 'use_colors': 'True', 'use_experimental_parser': 'False', 'no_print': 'None', 'quiet': 'False', 'empty': 'None', 'log_format': 'default', 'invocation_command': 'dbt debug', 'introspect': 'True', 'static_parser': 'True', 'target_path': 'None', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'send_anonymous_usage_stats': 'True'}
+[0m15:28:19.843157 [info ] [MainThread]: dbt version: 1.9.1
+[0m15:28:19.844164 [info ] [MainThread]: python version: 3.11.5
+[0m15:28:19.845154 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:28:19.845154 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:28:19.897007 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\.dbt
+[0m15:28:19.897566 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\.dbt\profiles.yml
+[0m15:28:19.898573 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:28:19.898573 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:28:19.899570 [debug] [MainThread]: Command `dbt debug` failed at 15:28:19.899570 after 0.13 seconds
+[0m15:28:19.899570 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8C654A290>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8CD0276D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000001B8CCF77A50>]}
+[0m15:28:19.900569 [debug] [MainThread]: Flushing usage events
+[0m15:28:21.983425 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:28:32.034983 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A459366F90>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A459322150>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A459320410>]}
+
+
+============================== 15:28:32.038990 | d6376f8f-9ed6-408c-89da-0ed0b11ad2ff ==============================
+[0m15:28:32.038990 [info ] [MainThread]: Running with dbt=1.9.1
+[0m15:28:32.038990 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': 'C:\\Users\\Rafli\\.dbt', 'fail_fast': 'False', 'warn_error': 'None', 'log_path': 'logs', 'debug': 'False', 'version_check': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'introspect': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'static_parser': 'True', 'target_path': 'None', 'invocation_command': 'dbt debug --profiles-dir C:\\Users\\Rafli\\.dbt --project-dir C:\\Users\\Rafli\\Desktop\\talent-match-intelligence\\dbt -t dev', 'send_anonymous_usage_stats': 'True'}
+[0m15:28:32.054020 [info ] [MainThread]: dbt version: 1.9.1
+[0m15:28:32.055031 [info ] [MainThread]: python version: 3.11.5
+[0m15:28:32.056023 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:28:32.056023 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:28:32.107266 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\.dbt
+[0m15:28:32.108260 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\.dbt\profiles.yml
+[0m15:28:32.108260 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:28:32.109260 [error] [MainThread]: Encountered an error:
+Internal Error
+  Profile should not be None if loading profile completed
+[0m15:28:32.110259 [debug] [MainThread]: Command `dbt debug` failed at 15:28:32.110259 after 0.13 seconds
+[0m15:28:32.110259 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A45937AC50>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A45940FF10>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x000002A45937AA10>]}
+[0m15:28:32.110259 [debug] [MainThread]: Flushing usage events
+[0m15:28:33.528193 [debug] [MainThread]: An error was encountered while trying to flush usage events
+[0m15:32:12.135990 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'start', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E9A382610>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E9A37E410>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E9A37F050>]}
+
+
+============================== 15:32:12.140609 | 544bd507-bbac-45e8-b876-6e052adecf99 ==============================
+[0m15:32:12.140609 [info ] [MainThread]: Running with dbt=1.9.1
+[0m15:32:12.140609 [debug] [MainThread]: running dbt with arguments {'printer_width': '80', 'indirect_selection': 'eager', 'log_cache_events': 'False', 'write_json': 'True', 'partial_parse': 'True', 'cache_selected_only': 'False', 'profiles_dir': 'C:\\Users\\Rafli\\Desktop\\talent-match-intelligence\\dbt', 'fail_fast': 'False', 'warn_error': 'None', 'log_path': 'C:\\Users\\Rafli\\Desktop\\talent-match-intelligence\\dbt\\logs', 'debug': 'False', 'version_check': 'True', 'use_colors': 'True', 'use_experimental_parser': 'False', 'empty': 'None', 'quiet': 'False', 'no_print': 'None', 'log_format': 'default', 'static_parser': 'True', 'warn_error_options': 'WarnErrorOptions(include=[], exclude=[])', 'invocation_command': 'dbt debug --profiles-dir C:\\Users\\Rafli\\Desktop\\talent-match-intelligence\\dbt --project-dir C:\\Users\\Rafli\\Desktop\\talent-match-intelligence\\dbt -t dev', 'target_path': 'None', 'introspect': 'True', 'send_anonymous_usage_stats': 'True'}
+[0m15:32:12.156860 [info ] [MainThread]: dbt version: 1.9.1
+[0m15:32:12.158365 [info ] [MainThread]: python version: 3.11.5
+[0m15:32:12.159372 [info ] [MainThread]: python path: C:\Users\Rafli\Desktop\talent-match-intelligence\venv\Scripts\python.exe
+[0m15:32:12.159372 [info ] [MainThread]: os info: Windows-10-10.0.26200-SP0
+[0m15:32:12.208308 [info ] [MainThread]: Using profiles dir at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt
+[0m15:32:12.208308 [info ] [MainThread]: Using profiles.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\profiles.yml
+[0m15:32:12.209814 [info ] [MainThread]: Using dbt_project.yml file at C:\Users\Rafli\Desktop\talent-match-intelligence\dbt\dbt_project.yml
+[0m15:32:12.210820 [info ] [MainThread]: adapter type: postgres
+[0m15:32:12.210820 [info ] [MainThread]: adapter version: 1.9.1
+[0m15:32:12.281803 [info ] [MainThread]: Configuration:
+[0m15:32:12.282809 [info ] [MainThread]:   profiles.yml file [[32mOK found and valid[0m]
+[0m15:32:12.282809 [info ] [MainThread]:   dbt_project.yml file [[32mOK found and valid[0m]
+[0m15:32:12.283926 [info ] [MainThread]: Required dependencies:
+[0m15:32:12.283926 [debug] [MainThread]: Executing "git --help"
+[0m15:32:12.314636 [debug] [MainThread]: STDOUT: "b"usage: git [-v | --version] [-h | --help] [-C <path>] [-c <name>=<value>]\n           [--exec-path[=<path>]] [--html-path] [--man-path] [--info-path]\n           [-p | --paginate | -P | --no-pager] [--no-replace-objects] [--bare]\n           [--git-dir=<path>] [--work-tree=<path>] [--namespace=<name>]\n           [--config-env=<name>=<envvar>] <command> [<args>]\n\nThese are common Git commands used in various situations:\n\nstart a working area (see also: git help tutorial)\n   clone     Clone a repository into a new directory\n   init      Create an empty Git repository or reinitialize an existing one\n\nwork on the current change (see also: git help everyday)\n   add       Add file contents to the index\n   mv        Move or rename a file, a directory, or a symlink\n   restore   Restore working tree files\n   rm        Remove files from the working tree and from the index\n\nexamine the history and state (see also: git help revisions)\n   bisect    Use binary search to find the commit that introduced a bug\n   diff      Show changes between commits, commit and working tree, etc\n   grep      Print lines matching a pattern\n   log       Show commit logs\n   show      Show various types of objects\n   status    Show the working tree status\n\ngrow, mark and tweak your common history\n   branch    List, create, or delete branches\n   commit    Record changes to the repository\n   merge     Join two or more development histories together\n   rebase    Reapply commits on top of another base tip\n   reset     Reset current HEAD to the specified state\n   switch    Switch branches\n   tag       Create, list, delete or verify a tag object signed with GPG\n\ncollaborate (see also: git help workflows)\n   fetch     Download objects and refs from another repository\n   pull      Fetch from and integrate with another repository or a local branch\n   push      Update remote refs along with associated objects\n\n'git help -a' and 'git help -g' list available subcommands and some\nconcept guides. See 'git help <command>' or 'git help <concept>'\nto read about a specific subcommand or concept.\nSee 'git help git' for an overview of the system.\n""
+[0m15:32:12.315635 [debug] [MainThread]: STDERR: "b''"
+[0m15:32:12.315635 [info ] [MainThread]:  - git [[32mOK found[0m]
+
+[0m15:32:12.316725 [info ] [MainThread]: Connection:
+[0m15:32:12.316725 [info ] [MainThread]:   host: localhost
+[0m15:32:12.317735 [info ] [MainThread]:   port: 54322
+[0m15:32:12.318735 [info ] [MainThread]:   user: postgres
+[0m15:32:12.318735 [info ] [MainThread]:   database: postgres
+[0m15:32:12.319735 [info ] [MainThread]:   schema: staging
+[0m15:32:12.319735 [info ] [MainThread]:   connect_timeout: 10
+[0m15:32:12.320734 [info ] [MainThread]:   role: None
+[0m15:32:12.320734 [info ] [MainThread]:   search_path: None
+[0m15:32:12.321733 [info ] [MainThread]:   keepalives_idle: 0
+[0m15:32:12.321733 [info ] [MainThread]:   sslmode: None
+[0m15:32:12.322740 [info ] [MainThread]:   sslcert: None
+[0m15:32:12.322740 [info ] [MainThread]:   sslkey: None
+[0m15:32:12.323736 [info ] [MainThread]:   sslrootcert: None
+[0m15:32:12.323736 [info ] [MainThread]:   application_name: dbt
+[0m15:32:12.323736 [info ] [MainThread]:   retries: 1
+[0m15:32:12.324782 [info ] [MainThread]: Registered adapter: postgres=1.9.1
+[0m15:32:12.505336 [debug] [MainThread]: Acquiring new postgres connection 'debug'
+[0m15:32:15.225299 [debug] [MainThread]: Using postgres connection "debug"
+[0m15:32:15.225299 [debug] [MainThread]: On debug: select 1 as id
+[0m15:32:15.226299 [debug] [MainThread]: Opening a new connection, currently in state init
+[0m15:32:15.247845 [debug] [MainThread]: SQL status: SELECT 1 in 0.022 seconds
+[0m15:32:15.249846 [debug] [MainThread]: On debug: Close
+[0m15:32:15.249846 [info ] [MainThread]:   Connection test: [[32mOK connection ok[0m]
+
+[0m15:32:15.250845 [info ] [MainThread]: [32mAll checks passed![0m
+[0m15:32:15.251400 [debug] [MainThread]: Command `dbt debug` succeeded at 15:32:15.251400 after 3.19 seconds
+[0m15:32:15.252406 [debug] [MainThread]: Connection 'debug' was properly closed.
+[0m15:32:15.252911 [debug] [MainThread]: Sending event: {'category': 'dbt', 'action': 'invocation', 'label': 'end', 'context': [<snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E93A1F410>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E9A5703D0>, <snowplow_tracker.self_describing_json.SelfDescribingJson object at 0x0000022E9A5720D0>]}
+[0m15:32:15.252911 [debug] [MainThread]: Flushing usage events
+[0m15:32:16.644501 [debug] [MainThread]: An error was encountered while trying to flush usage events

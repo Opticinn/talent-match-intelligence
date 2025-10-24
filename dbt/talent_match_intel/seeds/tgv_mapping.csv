@@ -1,0 +1,8 @@
+tv_name,tgv_name,weight,direction
+iq,Cognitive,0.30,higher_is_better
+faxtor,Cognitive,0.15,higher_is_better
+pauli,Cognitive,0.15,higher_is_better
+gtq,Cognitive,0.10,higher_is_better
+tiki,Cognitive,0.05,lower_is_better
+competency_avg,Competency,0.15,higher_is_better
+rating_last_year,Performance,0.10,higher_is_better
