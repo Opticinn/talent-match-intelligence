@@ -1,11 +1,13 @@
-{{ config(alias='tgv_match', materialized='view') }}
+{{ config(materialized='view') }}
 
-with base as (
-  select
-    employee_id::text as employee_id,
-    tgv_name,
-    avg(tv_match_rate)::numeric as tgv_match_rate
-  from {{ ref('tv_match') }}
-  group by 1,2
-)
-select * from base
+select
+  employee_id,
+  cognitive_norm,
+  competency_norm,
+  performance_norm,
+  has_cognitive_data,
+  weighted_cog,
+  weighted_comp,
+  weighted_perf,
+  tgv_score
+from {{ ref('int_tgv_score') }}
