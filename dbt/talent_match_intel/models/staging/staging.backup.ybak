@@ -1,0 +1,168 @@
+version: 2
+
+models:
+    models:
+    - name: stg_profiles_psych_clean
+    description: "Psychometric & cognitive profile per employee (cleaned)"
+    columns:
+      - name: employee_id
+        description: "Unique employee key"
+        tests:
+          - not_null
+          - unique
+
+      - name: mbti_norm
+        description: "MBTI standardized (boleh NULL; jika ada harus 1 dari 16 tipe)"
+        tests:
+          - accepted_values:
+              values:
+                - INTJ
+                - INTP
+                - ENTJ
+                - ENTP
+                - INFJ
+                - INFP
+                - ENFJ
+                - ENFP
+                - ISTJ
+                - ISFJ
+                - ESTJ
+                - ESFJ
+                - ISTP
+                - ISFP
+                - ESTP
+                - ESFP
+              quote: true
+              config:
+                severity: warn
+
+      - name: disc_norm
+        description: "DISC normalized (1–2 huruf D/I/S/C; boleh NULL)"
+        tests:
+          - disc_norm_valid:
+              config:
+                severity: warn
+
+      - name: iq
+        description: "IQ ~80–140; nilai di luar rentang -> NULL pada model clean"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 80
+              max_value: 140
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: pauli
+        description: "Pauli ~20–100; nilai di luar rentang -> NULL pada model clean"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 20
+              max_value: 100
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: faxtor
+        description: "Faxtor ~20–100; nilai di luar rentang -> NULL pada model clean"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 20
+              max_value: 100
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq1
+        description: "GTQ1 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq2
+        description: "GTQ2 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq3
+        description: "GTQ3 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq4
+        description: "GTQ4 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq5
+        description: "GTQ5 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: gtq_total
+        description: "Jumlah subtest GTQ (boleh NULL)"
+        tests: []
+
+      - name: tiki1
+        description: "TIKI1 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: tiki2
+        description: "TIKI2 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: tiki3
+        description: "TIKI3 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn
+
+      - name: tiki4
+        description: "TIKI4 1–10 (boleh NULL)"
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 10
+              inclusive: true
+              config:
+                severity: warn

@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: stg_profiles_psych_enrich
+    description: "Enriched psych profile (DISC backfill dari disc_word + perbaikan MBTI typo)"
+    columns:
+      - name: employee_id
+        tests:
+          - not_null
+          - unique
+
+      - name: disc_norm
+        description: "DISC normalized/backfilled (1–2 huruf D/I/S/C; boleh NULL)"
+        tests:
+          - disc_norm_valid:
+              config: { severity: warn }
+
+      - name: mbti_norm
+        description: "MBTI setelah perbaikan typo (boleh NULL)"
+        tests:
+          - accepted_values:
+              values:
+                - INTJ
+                - INTP
+                - ENTJ
+                - ENTP
+                - INFJ
+                - INFP
+                - ENFJ
+                - ENFP
+                - ISTJ
+                - ISFJ
+                - ESTJ
+                - ESFJ
+                - ISTP
+                - ISFP
+                - ESTP
+                - ESFP
+              quote: true
+              config: { severity: warn }

@@ -5,7 +5,9 @@ models:
     description: "Employees (cleaned & typed) dari raw.employees"
     columns:
       - name: employee_id
-        tests: [not_null, unique]
+        tests:
+          - not_null
+          - unique
       - name: years_of_service_months
         description: "Masa kerja (bulan)"
         tests:
@@ -15,11 +17,19 @@ models:
 
   - name: stg_performance_yearly
     description: "Annual performance ratings (1–5)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, year]
     columns:
       - name: employee_id
         tests: [not_null]
       - name: year
-        tests: [not_null]
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 2021
+              max_value: 2025
+              inclusive: true
       - name: rating
         tests:
           - dbt_utils.accepted_range:
@@ -27,16 +37,11 @@ models:
               max_value: 5
               inclusive: true
 
-  - name: stg_profiles_psych
-    description: "Psychometric & cognitive profile per employee"
-    columns:
-      - name: employee_id
-        tests: [not_null, unique]
-      - name: mbti
-        description: "MBTI standardized (opsional null untuk nilai tidak valid)"
-
   - name: stg_papi_scores
     description: "PAPI Kostick scale scores 1–9"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, scale_code]
     columns:
       - name: employee_id
         tests: [not_null]
@@ -50,7 +55,10 @@ models:
               inclusive: true
 
   - name: stg_strengths
-    description: "CliftonStrengths top ranks"
+    description: "CliftonStrengths top ranks (1–14 unik per employee)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, rank]
     columns:
       - name: employee_id
         tests: [not_null]
@@ -61,13 +69,26 @@ models:
               max_value: 14
               inclusive: true
 
-  - name: stg_competencies_yearly
-    description: "Historical competency pillars (scores 1–5)"
+  - name: stg_competencies_yearly_clean
+    description: "Historical competency pillars (scores 1–5, year 2021–2025, pillar valid)"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, pillar_code, year]
     columns:
       - name: employee_id
         tests: [not_null]
       - name: pillar_code
-        tests: [not_null]
+        tests:
+          - not_null
+          - relationships:
+              to: source('raw','dim_competency_pillars')
+              field: pillar_code
+      - name: year
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 2021
+              max_value: 2025
+              inclusive: true
       - name: score
         tests:
           - dbt_utils.accepted_range:

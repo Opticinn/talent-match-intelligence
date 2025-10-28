@@ -1,70 +1,101 @@
-{{ config(materialized='view') }}
+-- models/staging/stg_profiles_psych_clean.sql
 
-with base as (
-  select
-    p.employee_id,
-    e.department_id,
-    p.iq::numeric      as iq,
-    p.gtq::numeric     as gtq,
-    p.tiki::numeric    as tiki,
-    p.faxtor::numeric  as faxtor,
-    p.pauli::numeric   as pauli,
-    case when p.iq is not null or p.gtq is not null then true else false end as has_cognitive_data
-  from {{ source('raw','profiles_psych') }} p
-  join {{ source('raw','employees') }} e using (employee_id)
-  where p.employee_id is not null
-),
-valid_dept as (
-  select department_id
-  from base
-  where has_cognitive_data
-  group by department_id
-),
-dept_med as (
-  select
-    department_id,
-    percentile_cont(0.5) within group (order by iq)      as med_iq,
-    percentile_cont(0.5) within group (order by gtq)     as med_gtq,
-    percentile_cont(0.5) within group (order by tiki)    as med_tiki,
-    percentile_cont(0.5) within group (order by faxtor)  as med_faxtor,
-    percentile_cont(0.5) within group (order by pauli)   as med_pauli
-  from base
-  where department_id in (select department_id from valid_dept)
-  group by department_id
-),
-glob_med as (
-  select
-    percentile_cont(0.5) within group (order by iq)      as gmed_iq,
-    percentile_cont(0.5) within group (order by gtq)     as gmed_gtq,
-    percentile_cont(0.5) within group (order by tiki)    as gmed_tiki,
-    percentile_cont(0.5) within group (order by faxtor)  as gmed_faxtor,
-    percentile_cont(0.5) within group (order by pauli)   as gmed_pauli
-  from base
-  where has_cognitive_data
-),
-impute as (
-  select
-    b.employee_id,
-    b.department_id,
-    b.has_cognitive_data,
-    coalesce(b.iq,     d.med_iq,     g.gmed_iq    ) as iq_filled,
-    coalesce(b.gtq,    d.med_gtq,    g.gmed_gtq   ) as gtq_filled,
-    coalesce(b.tiki,   d.med_tiki,   g.gmed_tiki  ) as tiki_filled,
-    coalesce(b.faxtor, d.med_faxtor, g.gmed_faxtor) as faxtor_filled,
-    coalesce(b.pauli,  d.med_pauli,  g.gmed_pauli ) as pauli_filled
-  from base b
-  left join dept_med d on d.department_id = b.department_id
-  cross join glob_med g
+{% set src_rel = source('raw','profiles_psych') %}
+
+-- pre-check kolom yang tersedia di source
+{% set has_employee_id = has_column(src_rel, 'employee_id') %}
+{% set has_pauli       = has_column(src_rel, 'pauli') %}
+{% set has_faxtor      = has_column(src_rel, 'faxtor') %}
+{% set has_disc        = has_column(src_rel, 'disc') %}
+{% set has_disc_word   = has_column(src_rel, 'disc_word') %}
+{% set has_enneagram   = has_column(src_rel, 'enneagram') %}
+{% set has_mbti        = has_column(src_rel, 'mbti') %}
+{% set has_iq          = has_column(src_rel, 'iq') %}
+{% set has_gtq1        = has_column(src_rel, 'gtq1') %}
+{% set has_gtq2        = has_column(src_rel, 'gtq2') %}
+{% set has_gtq3        = has_column(src_rel, 'gtq3') %}
+{% set has_gtq4        = has_column(src_rel, 'gtq4') %}
+{% set has_gtq5        = has_column(src_rel, 'gtq5') %}
+{% set has_gtq_total   = has_column(src_rel, 'gtq_total') %}
+{% set has_tiki1       = has_column(src_rel, 'tiki1') %}
+{% set has_tiki2       = has_column(src_rel, 'tiki2') %}
+{% set has_tiki3       = has_column(src_rel, 'tiki3') %}
+{% set has_tiki4       = has_column(src_rel, 'tiki4') %}
+
+with src as (
+  select * from {{ src_rel }}
 )
+
 select
-  employee_id,
-  department_id,
-  has_cognitive_data,
-  iq_filled,
-  gtq_filled,
-  tiki_filled,
-  faxtor_filled,
-  pauli_filled,
-  (coalesce(iq_filled,0) + coalesce(gtq_filled,0) + coalesce(tiki_filled,0)
-   + coalesce(faxtor_filled,0) + coalesce(pauli_filled,0)) / 5.0 as cognitive_index
-from impute
+  -- ====== KEYS ======
+  {% if has_employee_id %} employee_id {% else %} null::text as employee_id {% endif %},
+
+  -- ====== PAULI & FAXTOR (20..100) ======
+  {% if has_pauli %}
+    case when pauli between 20 and 100 then pauli else null end as pauli
+  {% else %}
+    null::numeric as pauli
+  {% endif %},
+
+  {% if has_faxtor %}
+    case when faxtor between 20 and 100 then faxtor else null end as faxtor
+  {% else %}
+    null::numeric as faxtor
+  {% endif %},
+
+  -- ====== DISC (normalize ke D/I/S/C, max 2 char) ======
+  {% if has_disc %}
+    regexp_replace(upper(coalesce(disc,'')), '[^DISC]', '', 'g') as disc_norm,
+    substr(regexp_replace(upper(coalesce(disc,'')), '[^DISC]', '', 'g'),1,1) as first_char_norm,
+    substr(regexp_replace(upper(coalesce(disc,'')), '[^DISC]', '', 'g'),2,1) as second_char_norm
+  {% else %}
+    null::text as disc_norm,
+    null::text as first_char_norm,
+    null::text as second_char_norm
+  {% endif %},
+
+  {% if has_disc_word %} disc_word {% else %} null::text as disc_word {% endif %},
+
+  -- ====== ENNEAGRAM (1..9) ======
+  {% if has_enneagram %}
+    case when enneagram between 1 and 9 then enneagram else null end as enneagram
+  {% else %}
+    null::int as enneagram
+  {% endif %},
+
+  -- ====== MBTI (normalize + valid flag) ======
+  {% if has_mbti %}
+    upper(replace(replace(coalesce(mbti,''), ' ', ''), '-', '')) as mbti_norm,
+    (
+      upper(replace(replace(coalesce(mbti,''), ' ', ''), '-', ''))
+        in ('INTJ','INTP','ENTJ','ENTP','INFJ','INFP','ENFJ','ENFP',
+            'ISTJ','ISFJ','ESTJ','ESFJ','ISTP','ISFP','ESTP','ESFP')
+    ) as mbti_is_valid
+  {% else %}
+    null::text as mbti_norm,
+    null::boolean as mbti_is_valid
+  {% endif %},
+
+  -- ====== IQ (80..140) ======
+  {% if has_iq %}
+    case when iq between 80 and 140 then iq else null end as iq
+  {% else %}
+    null::numeric as iq
+  {% endif %},
+
+  -- ====== GTQ (1..10) ======
+  {% if has_gtq1 %} case when gtq1 between 1 and 10 then gtq1 else null end as gtq1 {% else %} null::int as gtq1 {% endif %},
+  {% if has_gtq2 %} case when gtq2 between 1 and 10 then gtq2 else null end as gtq2 {% else %} null::int as gtq2 {% endif %},
+  {% if has_gtq3 %} case when gtq3 between 1 and 10 then gtq3 else null end as gtq3 {% else %} null::int as gtq3 {% endif %},
+  {% if has_gtq4 %} case when gtq4 between 1 and 10 then gtq4 else null end as gtq4 {% else %} null::int as gtq4 {% endif %},
+  {% if has_gtq5 %} case when gtq5 between 1 and 10 then gtq5 else null end as gtq5 {% else %} null::int as gtq5 {% endif %},
+
+  {% if has_gtq_total %} gtq_total {% else %} null::int as gtq_total {% endif %},
+
+  -- ====== TIKI (1..10) ======
+  {% if has_tiki1 %} case when tiki1 between 1 and 10 then tiki1 else null end as tiki1 {% else %} null::int as tiki1 {% endif %},
+  {% if has_tiki2 %} case when tiki2 between 1 and 10 then tiki2 else null end as tiki2 {% else %} null::int as tiki2 {% endif %},
+  {% if has_tiki3 %} case when tiki3 between 1 and 10 then tiki3 else null end as tiki3 {% else %} null::int as tiki3 {% endif %},
+  {% if has_tiki4 %} case when tiki4 between 1 and 10 then tiki4 else null end as tiki4 {% else %} null::int as tiki4 {% endif %}
+
+from src
