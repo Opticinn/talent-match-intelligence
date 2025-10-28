@@ -3,8 +3,9 @@ with src as (
 ),
 rng as (
   select
-    employee_id, scale_code,
-    case when score between 1 and 9 then score else null end as score,
+    employee_id,
+    scale_code,
+    case when score between 1 and 9 then score::double precision else null end as score,
     row_number() over (partition by employee_id, scale_code order by score desc nulls last) as rn
   from src
 )
