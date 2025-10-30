@@ -19,7 +19,7 @@ adj as (
   select
     a.*,
     (case when has_cog=1 then w.w_cog else 0 end +
-     case when has_comp=1 then w.w_comp else 0 end +
+     case when has_comp=1 then w.w_comp else 0 end +z
      case when has_perf=1 then w.w_perf else 0 end) as available_sum
   from avail a cross join w
 )

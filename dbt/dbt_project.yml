@@ -30,6 +30,70 @@ models:
     marts:
       +schema: marts
 
+models:
+  - name: int_competencies_imputed
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, pillar_code, year]
+    columns:
+      - name: score_imputed
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+              inclusive: true
+
+version: 2
+models:
+  - name: int_performance_imputed
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, year]
+    columns:
+      - name: rating_imputed
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 5
+              inclusive: true
+
+version: 2
+models:
+  - name: int_papi_imputed
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id, scale_code]
+    columns:
+      - name: score_imputed
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 1
+              max_value: 9
+              inclusive: true
 
 
-
+models:
+  - name: stg_tgv_features
+    description: "Latest per-employee features: cognitive_norm, competency_norm, performance_norm"
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns: [employee_id]
+    columns:
+      - name: cognitive_norm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+      - name: competency_norm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
+      - name: performance_norm
+        tests:
+          - dbt_utils.accepted_range:
+              min_value: 0
+              max_value: 1
+              inclusive: true
