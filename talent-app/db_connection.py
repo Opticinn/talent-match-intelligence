@@ -11,14 +11,21 @@ warnings.filterwarnings('ignore')
 load_dotenv()
 
 def get_db_connection():
-    """Get database connection for your local Supabase"""
-    return psycopg2.connect(
-        host="127.0.0.1",
-        database="postgres",
-        user="postgres",
-        password="postgres",
-        port="54322"
-    )
+    """Get database connection dengan fallback untuk Streamlit Cloud"""
+    try:
+        import psycopg2
+        # Your existing connection code
+        return psycopg2.connect(
+            host="127.0.0.1",
+            database="postgres", 
+            user="postgres",
+            password="postgres",
+            port="54322"
+        )
+    except ImportError:
+        print("⚠️ psycopg2 not available - using demo mode")
+        return None
+
 
 def execute_query(query, params=None):
     """Execute SQL query and return results"""
@@ -448,3 +455,15 @@ def execute_talent_matching_sql(benchmark_ids, weights_config=None):
     """
     
     return execute_query(alternative_query)
+
+def get_demo_data(query):
+    """Provide demo data untuk Streamlit Cloud"""
+    # Return sample data berdasarkan query type
+    if "employee" in query.lower():
+        return pd.DataFrame({
+            'employee_id': ['EMP100001', 'EMP100002', 'EMP100003'],
+            'fullname': ['John Doe', 'Jane Smith', 'Bob Johnson'],
+            'current_role': ['Data Analyst', 'Data Scientist', 'Business Analyst']
+        })
+    # Add more demo data as needed
+    return pd.DataFrame()
