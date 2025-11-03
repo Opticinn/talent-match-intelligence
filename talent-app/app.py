@@ -1,3 +1,48 @@
+def format_employee_display(row):
+    """Format employee data into: EMP123 - Name (Role, Dept:X, Dir:Y, Perf:Z)"""
+    
+    parts = []
+    
+    # Basic info
+    employee_id = row.get('employee_id', 'N/A')
+    fullname = row.get('fullname', 'Unknown')
+    
+    # HR Information
+    current_role = row.get('current_role')
+    if current_role and current_role != 'N/A' and pd.notna(current_role):
+        parts.append(current_role)
+    
+    department = row.get('department') 
+    if department and department != 'N/A' and pd.notna(department):
+        parts.append(f"Dept:{department}")
+    
+    directorate = row.get('directorate')
+    if directorate and directorate != 'N/A' and pd.notna(directorate):
+        parts.append(f"Dir:{directorate}")
+    
+    # Performance score
+    performance_rating = row.get('performance_rating')
+    if performance_rating and pd.notna(performance_rating):
+        parts.append(f"Perf:{performance_rating:.1f}")
+    else:
+        # Fallback: Calculate from competency and cognitive
+        competency = row.get('avg_competency', 0)
+        cognitive = row.get('cognitive_norm', 0.5)
+        estimated_perf = (competency * 0.6 + cognitive * 0.4) * 5
+        parts.append(f"Perf:{estimated_perf:.1f}")
+    
+    # Combine all parts
+    hr_info = ", ".join(parts)
+    
+    return f"{employee_id} - {fullname} ({hr_info})"
+
+
+
+
+
+
+
+
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -9,16 +54,19 @@ from db_connection import execute_query, get_available_roles, get_employees_by_r
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
+from db_connection import get_comprehensive_employee_data
+
+
 
 load_dotenv()
 
 # Your proven success formula weights - FIXED
+# BENAR - Sesuai grid search results
+# GANTI di bagian atas app.py:
 SUCCESS_WEIGHTS = {
-    'competency': 0.40,
-    'cognitive': 0.25, 
-    'personality': 0.20,
-    'behavioral': 0.10,
-    'contextual': 0.05
+    'competency': 0.90,
+    'cognitive': 0.05, 
+    'performance': 0.05
 }
 
 # Konfigurasi Gemini
@@ -456,97 +504,107 @@ def show_input_page():
         help="Describe the main purpose and objectives of this role"
     )
     
-    # SECTION 2: EMPLOYEE BENCHMARKING
+    
+    
+        # SECTION 2: EMPLOYEE BENCHMARKING - IMPROVED VERSION
     st.markdown("### 👥 Employee Benchmarking")
     st.info("Select 3-5 employees who represent success in this role")
-    
-    # Load employees data
-    with st.spinner("🔄 Loading employees data..."):
-        employees_data = get_employee_data()
-    
+
+    # Load COMPREHENSIVE employee data
+    with st.spinner("🔄 Loading comprehensive employee data..."):
+        employees_data = get_comprehensive_employee_data()
+
     benchmark_ids = []
-    
+
     if employees_data is not None and not employees_data.empty:
-        # Calculate overall score untuk sorting - handle missing columns
-        employees_data['overall_score'] = 0.0
+        st.success(f"✅ Database connected! Loaded {len(employees_data)} employees")
         
-        # Safely calculate each component
-        if 'avg_competency' in employees_data.columns:
-            employees_data['overall_score'] += employees_data['avg_competency'].fillna(0) * SUCCESS_WEIGHTS['competency']
-        else:
-            employees_data['overall_score'] += 0.3 * SUCCESS_WEIGHTS['competency']
+        # DEBUG: Show available columns (bisa dihapus nanti)
+        with st.expander("🔍 Debug: Check Available Data"):
+            st.write(f"**Columns:** {', '.join(employees_data.columns.tolist())}")
+            st.write("**Sample HR Data:**")
+            sample_display = employees_data[['employee_id', 'fullname', 'current_role', 'department', 'directorate', 'performance_rating']].head(5)
+            st.dataframe(sample_display, use_container_width=True)
         
-        if 'cognitive_norm' in employees_data.columns:
-            employees_data['overall_score'] += employees_data['cognitive_norm'].fillna(0) * SUCCESS_WEIGHTS['cognitive']
-        else:
-            employees_data['overall_score'] += 0.5 * SUCCESS_WEIGHTS['cognitive']
-        
-        # Personality score
-        has_mbti = 'mbti_norm' in employees_data.columns
-        has_disc = 'disc_norm' in employees_data.columns
-        if has_mbti and has_disc:
-            personality_score = employees_data.apply(
-                lambda x: 0.7 if pd.notna(x.get('mbti_norm')) and pd.notna(x.get('disc_norm')) else 0.3, 
-                axis=1
-            )
-        else:
-            personality_score = 0.3
-        employees_data['overall_score'] += personality_score * SUCCESS_WEIGHTS['personality']
-        
-        # Behavioral score
-        if 'strengths_count' in employees_data.columns:
-            behavioral_score = employees_data['strengths_count'].fillna(0).apply(lambda x: 0.8 if x >= 5 else 0.4)
-        else:
-            behavioral_score = 0.4
-        employees_data['overall_score'] += behavioral_score * SUCCESS_WEIGHTS['behavioral']
-        
-        # Contextual score
-        if 'years_of_service_months' in employees_data.columns:
-            contextual_score = employees_data['years_of_service_months'].fillna(0).apply(lambda x: 0.7 if x > 24 else 0.3)
-        else:
-            contextual_score = 0.3
-        employees_data['overall_score'] += contextual_score * SUCCESS_WEIGHTS['contextual']
+        # Calculate overall score untuk sorting
+        employees_data['overall_score'] = (
+            employees_data['avg_competency'].fillna(0) * SUCCESS_WEIGHTS['competency'] +
+            employees_data['cognitive_norm'].fillna(0.5) * SUCCESS_WEIGHTS['cognitive'] +
+            employees_data['performance_rating'].fillna(0) * 0.2 +  # Additional weight for actual performance
+            0.3  # Base score
+        )
         
         # Sort by overall score
         employees_data = employees_data.sort_values('overall_score', ascending=False)
         
-        # Create employee options with job info - handle missing 'fullname'
+        # Create employee options dengan format yang diinginkan
         employee_options = {}
         for _, row in employees_data.iterrows():
-            score_display = f"🎯{row['overall_score']:.2f}"
-            
-            # Safely get employee name
-            employee_name = "Unknown"
-            if 'fullname' in row and pd.notna(row['fullname']):
-                employee_name = row['fullname']
-            elif 'employee_id' in row:
-                employee_name = f"Employee {row['employee_id']}"
-            
-            # Safely get job info
-            job_info = f"({row.get('current_role', 'N/A')} - {row.get('department', 'N/A')})"
-            
-            employee_options[f"{row['employee_id']} - {employee_name} {job_info} {score_display}"] = row['employee_id']
+            display_text = format_employee_display(row)
+            employee_options[display_text] = row['employee_id']
         
         # Employee selection
         selected_employees = st.multiselect(
             "Select Benchmark Employees*",
             options=list(employee_options.keys()),
             default=list(employee_options.keys())[:3] if len(employee_options) >= 3 else list(employee_options.keys()),
-            help="Choose 3-5 employees who represent success in this role"
+            help="Choose 3-5 employees who represent success in this role",
+            placeholder="Select employees like: EMP123 - Name (Role, Dept:X, Dir:Y, Perf:Z)"
         )
         
         benchmark_ids = [employee_options[emp] for emp in selected_employees]
         
-        # Show selected employees details
+        # Tampilkan selected employees dengan detail lengkap
         if benchmark_ids:
             st.markdown("#### 📋 Selected Benchmark Employees")
-            employee_details = get_employee_details(benchmark_ids)
-            if not employee_details.empty:
-                st.dataframe(employee_details, use_container_width=True)
+            
+            selected_details = employees_data[employees_data['employee_id'].isin(benchmark_ids)]
+            
+            if not selected_details.empty:
+                # Pilih kolom yang meaningful untuk display
+                display_columns = [
+                    'employee_id', 'fullname', 'current_role', 'department', 
+                    'directorate', 'performance_rating', 'avg_competency', 
+                    'cognitive_norm', 'overall_score'
+                ]
+                
+                # Filter hanya kolom yang ada
+                available_columns = [col for col in display_columns if col in selected_details.columns]
+                display_df = selected_details[available_columns].copy()
+                
+                # Format untuk readability
+                if 'performance_rating' in display_df.columns:
+                    display_df['performance_rating'] = display_df['performance_rating'].apply(
+                        lambda x: f"{x:.1f}" if pd.notna(x) else "N/A"
+                    )
+                if 'avg_competency' in display_df.columns:
+                    display_df['avg_competency'] = display_df['avg_competency'].apply(
+                        lambda x: f"{x:.2f}" if pd.notna(x) else "N/A"
+                    )
+                if 'cognitive_norm' in display_df.columns:
+                    display_df['cognitive_norm'] = display_df['cognitive_norm'].apply(
+                        lambda x: f"{x:.3f}" if pd.notna(x) else "N/A"
+                    )
+                if 'overall_score' in display_df.columns:
+                    display_df['overall_score'] = display_df['overall_score'].apply(
+                        lambda x: f"{x:.2f}" if pd.notna(x) else "N/A"
+                    )
+                
+                st.dataframe(display_df, use_container_width=True)
+                
+                # Show summary
+                if len(selected_details) > 1:
+                    avg_perf = selected_details['performance_rating'].mean() if 'performance_rating' in selected_details.columns else 0
+                    avg_comp = selected_details['avg_competency'].mean() if 'avg_competency' in selected_details.columns else 0
+                    st.caption(f"📈 Benchmark Averages: Performance: {avg_perf:.1f}, Competency: {avg_comp:.2f}")
     
     else:
         st.error("❌ Could not load employee data from database")
         benchmark_ids = []
+        
+        
+        
+        
     
     # SECTION 3: JOB DETAILS
     st.markdown("### 📝 Job Details")
@@ -732,62 +790,65 @@ def show_results_page():
         
         
 def generate_talent_match():
-    """Generate talent matching results"""
+    """Generate talent matching results - ADD DETAILED DEBUG"""
     with st.spinner("🔄 Generating talent matches..."):
         try:
             role_data = st.session_state.role_data
+            print(f"🔍 Starting talent match for role: {role_data['role_name']}")
+            print(f"🔍 Benchmark IDs: {role_data['benchmark_ids']}")
             
-            # 1. Calculate baseline from benchmark employees
+            # 1. Calculate baseline
             baseline_scores = calculate_benchmark_baseline(role_data['benchmark_ids'])
             
             if not baseline_scores:
+                print("❌ Baseline calculation failed, using fallback baseline")
+                baseline_scores = {
+                    'competency': 3.5,  # Fallback average
+                    'cognitive': 0.6,   # Fallback average  
+                    'performance': 4.0  # Fallback average
+                }
+            elif baseline_scores['competency'] == 0:
+                print("⚠️ WARNING: Baseline competency is 0, using fallback")
+                baseline_scores = {
+                    'competency': 3.5,
+                    'cognitive': 0.6, 
+                    'performance': 4.0
+                }
+            # ======== END QUICK TEST ========
+            
+            if not baseline_scores:
                 st.error("❌ Could not calculate baseline from benchmark employees")
+                print("❌ Baseline calculation returned None")
                 return
             
-            # 2. Get all employees for matching
+            print(f"✅ Baseline scores: {baseline_scores}")
+            
+            # 2. Get all employees
             all_employees = get_employee_data()
+            print(f"✅ Loaded {len(all_employees) if all_employees is not None else 0} employees")
             
             if all_employees is None or all_employees.empty:
                 st.error("❌ No employee data found")
                 return
             
-            # 3. Get employee details for results
-            all_employee_ids = all_employees['employee_id'].tolist()
-            employee_details = get_employee_details(all_employee_ids)
-            
-            # 4. Calculate scores for each employee
+            # 3. Calculate scores - REVISED NORMALIZATION
             results = []
-            for _, emp in all_employees.iterrows():
-                # Normalize scores (0-1 range)
-                competency_norm = min(emp.get('avg_competency', 0) / 5.0, 1.0) if pd.notna(emp.get('avg_competency')) else 0.3
+            for idx, emp in all_employees.iterrows():
+                # REVISED: Normalize scores dengan approach yang lebih robust
+                competency_norm = emp.get('avg_competency', 0) / 5.0 if pd.notna(emp.get('avg_competency')) else 0.3
                 cognitive_norm = emp.get('cognitive_norm', 0.5) if pd.notna(emp.get('cognitive_norm')) else 0.5
+                performance_norm = emp.get('performance_rating', 0) / 5.0 if pd.notna(emp.get('performance_rating')) else 0.3
                 
-                # Calculate component scores
-                personality_score = calculate_personality_score(emp.get('mbti_norm'), emp.get('disc_norm'))
-                behavioral_score = min(emp.get('strengths_count', 0) / 14.0, 1.0)
-                contextual_score = min(emp.get('years_of_service_months', 0) / 120.0, 1.0)
+                # REVISED: Calculate match rates dengan handling division
+                competency_match = min(competency_norm / max(baseline_scores['competency']/5.0, 0.1), 1.0)
+                cognitive_match = min(cognitive_norm / max(baseline_scores['cognitive'], 0.1), 1.0)
+                performance_match = min(performance_norm / max(baseline_scores['performance']/5.0, 0.1), 1.0)
                 
-                # Calculate match rate against baseline
-                competency_match = competency_norm / baseline_scores['competency'] if baseline_scores['competency'] > 0 else 0
-                cognitive_match = cognitive_norm / baseline_scores['cognitive'] if baseline_scores['cognitive'] > 0 else 0
-                personality_match = personality_score / baseline_scores['personality'] if baseline_scores['personality'] > 0 else 0
-                behavioral_match = behavioral_score / baseline_scores['behavioral'] if baseline_scores['behavioral'] > 0 else 0
-                contextual_match = contextual_score / baseline_scores['contextual'] if baseline_scores['contextual'] > 0 else 0
-                
-                # Cap matches at 1.0
-                competency_match = min(competency_match, 1.0)
-                cognitive_match = min(cognitive_match, 1.0)
-                personality_match = min(personality_match, 1.0)
-                behavioral_match = min(behavioral_match, 1.0)
-                contextual_match = min(contextual_match, 1.0)
-                
-                # Calculate final match rate
+                # Final score
                 final_score = (
                     competency_match * SUCCESS_WEIGHTS['competency'] +
                     cognitive_match * SUCCESS_WEIGHTS['cognitive'] +
-                    personality_match * SUCCESS_WEIGHTS['personality'] +
-                    behavioral_match * SUCCESS_WEIGHTS['behavioral'] +
-                    contextual_match * SUCCESS_WEIGHTS['contextual']
+                    performance_match * SUCCESS_WEIGHTS['performance']
                 )
                 
                 results.append({
@@ -795,43 +856,46 @@ def generate_talent_match():
                     'final_match_rate': final_score,
                     'competency_match': competency_match,
                     'cognitive_match': cognitive_match,
-                    'personality_match': personality_match,
-                    'behavioral_match': behavioral_match,
-                    'contextual_match': contextual_match
+                    'performance_match': performance_match
                 })
             
-            # Sort by match rate
-            results.sort(key=lambda x: x['final_match_rate'], reverse=True)
+            print(f"✅ Calculated scores for {len(results)} employees")
             
-            # Add rank and merge with employee details
+            # Sort and rank
+            results.sort(key=lambda x: x['final_match_rate'], reverse=True)
             for i, result in enumerate(results):
                 result['rank'] = i + 1
             
+            # Convert to DataFrame
             results_df = pd.DataFrame(results)
+            print(f"✅ Created results DataFrame with {len(results_df)} rows")
             
             # Merge with employee details
+            employee_details = get_employee_details([r['employee_id'] for r in results])
+            print(f"✅ Loaded details for {len(employee_details) if employee_details is not None else 0} employees")
+            
             if not employee_details.empty:
-                results_df = results_df.merge(
-                    employee_details, 
-                    on='employee_id', 
-                    how='left'
-                )
+                results_df = results_df.merge(employee_details, on='employee_id', how='left')
+                print("✅ Merged with employee details")
             else:
-                # Fallback: add basic employee info
+                # Fallback
                 basic_info = all_employees[['employee_id', 'fullname']].copy()
                 results_df = results_df.merge(basic_info, on='employee_id', how='left')
                 results_df['current_role'] = 'N/A'
                 results_df['department'] = 'N/A'
-                results_df['division'] = 'N/A'
                 results_df['directorate'] = 'N/A'
                 results_df['job_level'] = 'N/A'
+                print("✅ Used fallback employee info")
             
-            # Simpan sebagai DataFrame
+            # Save results
             st.session_state.results = results_df
+            print(f"🎉 SUCCESS: Talent matching completed. Top score: {results_df['final_match_rate'].iloc[0] if len(results_df) > 0 else 'N/A'}")
             
         except Exception as e:
             st.error(f"❌ Error generating talent matches: {str(e)}")
-            # Set results ke DataFrame kosong
+            print(f"❌ ERROR in generate_talent_match: {str(e)}")
+            import traceback
+            print(f"❌ TRACEBACK: {traceback.format_exc()}")
             st.session_state.results = pd.DataFrame()
 
 def show_results_table():
@@ -845,6 +909,7 @@ def show_results_table():
     st.markdown("### 📊 Talent Match Results")
     
     # PERBAIKAN: Tambahkan success formula breakdown untuk top candidates
+    # UPDATE: Hanya tampilkan 3 komponen
     if len(results_df) >= 3:
         st.markdown("#### 🎯 Top 3 Candidates - Success Formula Breakdown")
         
@@ -856,12 +921,10 @@ def show_results_table():
                 st.markdown(f"**#{idx+1} - {candidate.get('fullname', candidate['employee_id'])}**")
                 st.markdown(f"**Match Rate: {candidate['final_match_rate']:.1%}**")
                 
-                # Buat progress bars untuk visualisasi
-                st.markdown("**Kompetensi:** 🟩" + "🟩" * int(candidate.get('competency_match', 0) * 4))
-                st.markdown("**Kognitif:** 🟦" + "🟦" * int(candidate.get('cognitive_match', 0) * 4))
-                st.markdown("**Kepribadian:** 🟨" + "🟨" * int(candidate.get('personality_match', 0) * 4))
-                st.markdown("**Perilaku:** 🟪" + "🟪" * int(candidate.get('behavioral_match', 0) * 4))
-                st.markdown("**Konteks:** 🟧" + "🟧" * int(candidate.get('contextual_match', 0) * 4))
+                # HANYA 3 progress bars
+                st.markdown("**Kompetensi (90%):** 🟩" + "🟩" * int(candidate.get('competency_match', 0) * 8))
+                st.markdown("**Kognitif (5%):** 🟦" + "🟦" * int(candidate.get('cognitive_match', 0) * 2))
+                st.markdown("**Performance (5%):** 🟨" + "🟨" * int(candidate.get('performance_match', 0) * 2))
     
     st.markdown("---")
     
@@ -982,48 +1045,33 @@ def main():
             st.rerun()
         
         st.markdown("---")
+        # Di main() function, update sidebar:
         st.markdown("### 🎯 Success Formula")
         st.markdown("""
-        - **Kompetensi**: 40%
-        - **Kognitif**: 25%  
-        - **Kepribadian**: 20%
-        - **Perilaku**: 10%
-        - **Konteks**: 5%
+        - **Kompetensi**: 90%
+        - **Kognitif**: 5%  
+        - **Performance**: 5%
         """)
-        
+
         with st.expander("📖 Jelaskan Lebih Detail"):
             st.markdown("""
-            ### 🚀 Rahasia Sukses Karyawan dalam 5 Aspek
+            ### 🚀 Optimized Success Formula (Berdasarkan Grid Search)
             
-            **1. KOMPETENSI (40%) - "Skill Nyata"**  
-            *"Bisa nggak dia ngerjain tugasnya?"*
-            - Kemampuan teknis dan profesional
-            - Pengalaman di bidangnya  
-            - Track record menyelesaikan pekerjaan
+            **1. KOMPETENSI (90%) - "Skill Terapan"**  
+            *Berdasarkan analisis: korelasi tertinggi (0.418) dengan performance*
+            - Kemampuan teknis dan behavioral competencies
+            - Track record penyelesaian pekerjaan
+            - Differentiator utama antara top vs strong performers (+11%)
             
-            **2. KOGNITIF (25%) - "Kecerdasan"**  
-            *"Cepat nangkep nggak kalau dikasih tugas baru?"*
-            - Kemampuan belajar cepat
-            - Analisis masalah yang logis
-            - Penyelesaian masalah yang kreatif
+            **2. KOGNITIF (5%) - "Potensi Dasar"**  
+            *Berdasarkan analisis: korelasi rendah (0.03) dengan performance*
+            - IQ, reasoning, mental stamina
+            - Fondasi kemampuan, tapi bukan penentu utama
             
-            **3. KEPRIBADIAN (20%) - "Kecocokan"**  
-            *"Nyaman nggak kerja sama dia?"*
-            - Gaya komunikasi yang sesuai
-            - Cara kerja yang match dengan budaya perusahaan  
-            - Tipe kepribadian yang complement tim
-            
-            **4. PERILAKU (10%) - "Konsistensi"**  
-            *"Bisa diandalkan nggak dalam jangka panjang?"*
-            - Pola kekuatan karakter (Strengths)
-            - Konsistensi performa
-            - Motivasi intrinsik
-            
-            **5. KONTEKS (5%) - "Kesempatan"**  
-            *"Waktunya tepat nggak buat dia?"*
-            - Lama pengalaman kerja
-            - Level posisi yang sesuai
-            - Timing karir yang pas
+            **3. PERFORMANCE (5%) - "Histori Konsistensi"**  
+            *Berdasarkan analisis: memberikan konteks historis*
+            - Rating kinerja sebelumnya
+            - Memori performa, tapi risiko bias masa lalu
             """)
     
     # Main Content based on selected page
