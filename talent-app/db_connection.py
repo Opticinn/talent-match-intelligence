@@ -6,6 +6,7 @@ import pandas as pd
 from dotenv import load_dotenv
 import warnings
 import json
+import pg8000
 
 warnings.filterwarnings('ignore')
 load_dotenv()
