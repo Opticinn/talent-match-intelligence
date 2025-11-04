@@ -12,31 +12,28 @@ warnings.filterwarnings('ignore')
 load_dotenv()
 
 def get_db_connection():
-    """Get database connection untuk Supabase Cloud"""
+    """Get database connection dengan fallback handling"""
     try:
-        # Option 1: Gunakan DATABASE_URL dari environment variable
+        # Coba import psycopg2
+        import psycopg2
+        
         database_url = os.getenv("DATABASE_URL")
         if database_url:
-            print(f"🔗 Using DATABASE_URL: {database_url.split('@')[1] if '@' in database_url else 'hidden'}")
+            print(f"🔗 Using DATABASE_URL")
             return psycopg2.connect(database_url)
         
-        # Option 2: Gunakan individual parameters (fallback)
-        db_host = os.getenv("DB_HOST", "db.your-project.supabase.co")
-        db_name = os.getenv("DB_NAME", "postgres")
-        db_user = os.getenv("DB_USER", "postgres")
-        db_password = os.getenv("DB_PASSWORD", "your-password")
-        db_port = os.getenv("DB_PORT", "5432")
-        
-        print(f"🔗 Connecting to: {db_host}")
-        
+        # Fallback ke individual parameters
         return psycopg2.connect(
-            host=db_host,
-            database=db_name,
-            user=db_user,
-            password=db_password,
-            port=db_port
+            host=os.getenv("DB_HOST"),
+            database=os.getenv("DB_NAME", "postgres"),
+            user=os.getenv("DB_USER", "postgres"),
+            password=os.getenv("DB_PASSWORD"),
+            port=os.getenv("DB_PORT", "5432")
         )
         
+    except ImportError:
+        print("⚠️ psycopg2 not available - using demo mode")
+        return None
     except Exception as e:
         print(f"❌ Database connection error: {e}")
         return None
