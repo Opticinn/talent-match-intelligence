@@ -1,136 +1,130 @@
-🎯 Talent Match Intelligence System
-📋 Overview
-Talent Match Intelligence is an enterprise-grade AI-powered system that identifies success patterns among high-performing employees and matches potential candidates for succession planning. Built with a modern data stack and optimized Success Formula 90-5-5 based on empirical grid search analysis.
+# 🎯 Talent Match Intelligence
 
-https://docs/stage2_import.png.jpg
+<div align="center">
 
-🚀 Key Features
-🔍 Success Pattern Discovery: Identifies what makes top performers successful
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=for-the-badge&logo=Streamlit&logoColor=white)
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
+![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![Google Gemini](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white)
 
-🎯 Optimized Talent Matching: 90-5-5 Success Formula based on grid search analysis
+**AI-Powered Talent Analytics Platform for Enterprise Succession Planning**
 
-🤖 AI-Powered Job Descriptions: Generative AI for HR-focused job specifications
+[![Live Demo](https://img.shields.io/badge/🚀_Live_Demo-Click_Here-2EA44F?style=for-the-badge)](https://gkyvahxulkbu4eyfsbfrng.streamlit.app/)
+[![GitHub Issues](https://img.shields.io/badge/🐛_Issues-Report_Here-FF4B4B?style=for-the-badge)](https://github.com/Opticinn/talent-match-intelligence/issues)
 
-📊 Interactive Dashboard: Streamlit web application with real-time insights
+</div>
 
-🏗️ Enterprise Data Pipeline: 364 dbt models transforming 200,000+ records
+## 📊 Overview
 
-📈 Data-Driven Decisions: Empirical evidence-based talent recommendations
+Talent Match Intelligence is an **enterprise-grade AI-powered platform** that revolutionizes talent management by identifying success patterns among high-performing employees and providing data-driven succession planning recommendations.
 
-🏗️ System Architecture
-text
-talent-match-intelligence/
-├── 📊 dbt/ (364 files)          # Data Transformation Pipeline
-│   ├── models/
-│   │   ├── staging/            # Data cleaning & standardization
-│   │   ├── intermediate/       # Feature engineering & imputation
-│   │   └── marts/             # Business-ready data models
-│   ├── tests/                 # Data quality validation
-│   └── dbt_project.yml        # Project configuration
-├── 🚀 app/ (5 files)           # Streamlit Application
-│   ├── app.py                # Main application logic
-│   ├── db_connection.py      # Database integration
-│   └── requirements.txt      # Python dependencies
-└── 📋 docs/                   # Documentation & Reports
-📊 Success Formula 90-5-5
-Based on comprehensive grid search analysis of 2,010 employees:
+> 🔬 **Based on empirical analysis of 2,010 employees with 364 data models**
 
-Component	Weight	Rationale
-Competency	90%	Strongest correlation (0.418) with performance, +11% gap between top vs strong performers
-Cognitive	5%	Foundational capability with minimal performance differentiation
-Performance	5%	Historical context with recency weighting
-text
-Final Match Rate = 0.90 × Competency + 0.05 × Cognitive + 0.05 × Performance
-🛠️ Technology Stack
-Data Engineering
-PostgreSQL + Supabase - Database & Hosting
+## ✨ Key Features
 
-dbt (Data Build Tool) - Data transformation & pipeline
+<div align="center">
 
-Python + Pandas - Data analysis & processing
+| 🤖 AI Analytics | 📈 Performance Insights | 🎯 Talent Matching |
+|:---------------:|:-----------------------:|:------------------:|
+| **Google Gemini AI** powered analysis | **Real-time dashboards** with interactive metrics | **90-5-5 Success Formula** for optimal matching |
+| 🚀 Enterprise Ready | 📊 Data Driven | 🔒 Secure & Scalable |
+| **Production-grade** architecture | **200,000+ records** processed | **SSL encryption** & secure deployment |
 
-Application Layer
-Streamlit - Web application framework
+</div>
 
-Google Gemini 2.0 Flash - AI-powered job descriptions
+## 🏆 Success Formula 90-5-5
 
-Plotly - Interactive visualizations
+<div align="center">
 
-DevOps & Tools
-Git - Version control
+| Component | Weight | Impact | Correlation |
+|-----------|--------|--------|-------------|
+| **🎯 Competency** | **90%** | **+11% performance gap** | 0.418 |
+| **🧠 Cognitive** | 5% | Minimal differentiation | 0.032 |
+| **📈 Performance** | 5% | Historical context | 0.215 |
 
-VS Code - Development environment
+</div>
 
-PowerShell/Bash - Scripting & automation
+```python
+# Optimized Success Formula
+match_score = (0.90 * competency_score + 
+               0.05 * cognitive_score + 
+               0.05 * performance_score)
+```
 
-📁 Project Structure
-bash
-talent-match-intelligence/
-├── talent-app/
-│   ├── app.py                 # Main Streamlit application
-│   ├── db_connection.py       # Database connection & queries
-│   ├── requirements.txt       # Python dependencies
-│   └── runtime.txt           # Python version specification
-├── .streamlit/
-│   └── config.toml           # Streamlit configuration
-└── README.md                 # Documentation
-🚀 Quick Start
-Prerequisites
-Python 3.11+
+## 🛠️ Technology Stack
 
-PostgreSQL database (Supabase recommended)
+### Core Platform
+- **🎯 Frontend**: Streamlit Web Framework
+- **🤖 AI Engine**: Google Gemini 2.0 Flash
+- **🗄️ Database**: PostgreSQL + Supabase Cloud
+- **🔧 Backend**: Python 3.11 + Pandas + SQLAlchemy
 
-Google Gemini API key
+### Data Pipeline
+- **📊 Processing**: 364 dbt models
+- **🔄 ETL**: Custom data transformation layer
+- **✅ Validation**: Comprehensive data quality checks
 
-Installation
-Clone the repository
+## 🚀 Quick Start
 
-bash
+### 🌐 Live Application
+➡️ **Ready to use?** [Access the Live App Here](https://gkyvahxulkbu4eyfsbfrng.streamlit.app/)
+
+### Prerequisites
+- Python 3.11+
+- PostgreSQL Database
+- Google Gemini API Key
+
+### Installation
+
+```bash
+# 1. Clone repository
 git clone https://github.com/Opticinn/talent-match-intelligence.git
 cd talent-match-intelligence
-Set up Python environment
 
-bash
+# 2. Setup environment
 cd talent-app
 python -m venv venv
 source venv/bin/activate  # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-Configure environment variables
-Create .env file:
 
-env
-# Database Configuration (Supabase)
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Configure environment
+cp .env.example .env
+# Edit .env with your credentials
+
+# 5. Launch application
+streamlit run app.py
+```
+
+### Environment Configuration
+
+```env
+# Database Configuration
 DB_HOST=aws-1-ap-southeast-2.pooler.supabase.com
 DB_PORT=5432
 DB_NAME=postgres
 DB_USER=postgres.xjzgzjxkikzzqprlyytd
-DB_PASSWORD=your_password
+DB_PASSWORD=your_secure_password
 
 # AI Configuration
 GEMINI_API_KEY=your_gemini_api_key
-Run the application
+```
 
-bash
-streamlit run app.py
-🌐 Deployment
-Streamlit Cloud Deployment
-Push to GitHub
+## 🌐 Deployment
 
-bash
+### Streamlit Cloud Deployment
+
+1. **Push to GitHub**
+```bash
 git add .
-git commit -m "Deploy talent match intelligence app"
+git commit -m "🚀 Deploy Talent Match Intelligence"
 git push origin main
-Deploy on Streamlit Cloud
+```
 
-Go to Streamlit Cloud
-
-Connect your GitHub repository
-
-Set main file path: talent-app/app.py
-
-Configure Secrets in Streamlit Cloud
-
-toml
+2. **Configure Streamlit Secrets**
+```toml
 [postgres]
 host = "aws-1-ap-southeast-2.pooler.supabase.com"
 port = 5432
@@ -140,154 +134,163 @@ password = "your_supabase_password"
 
 [gemini]
 api_key = "your_gemini_api_key"
-💡 Usage Guide
-1. Database Connection
-Click "Test Database Connection" in sidebar
+```
 
-Ensure successful connection before proceeding
+3. **Deploy Application**
+   - Visit [Streamlit Cloud](https://share.streamlit.io/)
+   - Connect your repository
+   - Set main file to `talent-app/app.py`
+   - Deploy! 🚀
 
-2. Role Selection
-Select target role from dropdown (Software Engineer, Data Scientist, Product Manager)
+## 💡 Usage Guide
 
-Choose job level and requirements
+### Step 1: Database Connection
+- Navigate to sidebar
+- Click **"Test Database Connection"**
+- Verify successful connection ✅
 
-3. Talent Analysis
-Click "Analyze Talent" to start AI-powered analysis
 
-View employee data and performance metrics
+### Step 2: Role Selection
+- Choose target role from dropdown:
+  - 🎯 Brand Executive
+  - 📊 Data Analyst  
+  - 💰 Finance Officer
+  - 👥 HRBP
+  - 📈 Sales Supervisor
+  - 📦 Supply Planner
 
-Review AI-generated insights and recommendations
+### Step 3: Talent Analysis
+- Click **"Analyze Talent"** button
+- View real-time employee data
+- Explore AI-generated insights
 
-4. Results Interpretation
-Analyze match scores using 90-5-5 Success Formula
+### Step 4: Results Review
+- Analyze **match scores** (90-5-5 formula)
+- Review **strengths & opportunities**
+- Export **decision-ready reports**
 
-Review strengths and development opportunities
-
-Export results for decision-making
-
-📈 Key Findings
-Performance Distribution
-Rating	Count	Percentage	Classification
-✅ 5	744	36.9%	Top Performer
-4	983	48.7%	Strong Performer
-3	274	13.6%	Developing
-1-2	9	<1%	Needs Improvement
-Critical Insights
-85.6% of employees are high performers (rating 4-5)
-
-Competency scores are 11% higher in top performers
-
-Cognitive ability shows negligible correlation with performance (r=0.032)
-
-Strategic thinking competencies dominate among top performers
-
-🎯 Business Impact
-30% faster identification of succession candidates
-
-Data-driven promotion decisions reducing bias
-
-Improved talent retention through better role matching
-
-Standardized success criteria across organization
-
-25% improvement in candidate quality match
-
-🔧 Development
-Running Tests
-bash
-# Database connection test
-cd talent-app
-python -c "from db_connection import get_db_connection; print('✅ Connection successful' if get_db_connection() else '❌ Connection failed')"
-
-# Application test
-streamlit run app.py --server.headless true
-Code Standards
-Follow Python PEP 8 guidelines
-
-Use meaningful variable names
-
-Include comprehensive error handling
-
-Document new features in README
-
-📊 Data Sources
-The system processes multiple data domains:
-
-Employee Master Data (2,010 employees)
-
-Performance Records (10,050 annual ratings)
-
-Competency Assessments (100,500 pillar scores)
-
-Psychometric Profiles (IQ, MBTI, DISC, Pauli, Faxtor)
-
-Behavioral Strengths (28,140 theme records)
-
-Work Preferences (40,200 PAPI scale scores)
-
-🤝 Contributing
-Fork the repository
-
-Create a feature branch (git checkout -b feature/amazing-feature)
-
-Commit your changes (git commit -m 'Add amazing feature')
-
-Push to the branch (git push origin feature/amazing-feature)
-
-Open a Pull Request
-
-📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-🏆 Acknowledgments
-Rakamin Academy for the case study opportunity
-
-Supabase for PostgreSQL hosting
-
-Google Gemini for AI capabilities
-
-Streamlit for rapid application development
-
-📞 Support
-For support and questions:
-
-📧 Email: mrafifauzi03@gmail.com
-
-💼 LinkedIn: Muhammad Rafil Fauzi
-
-🐛 Issues: GitHub Issues
-
-🚀 Deployment Status
-Live Application Status: ✅ DEPLOYED & OPERATIONAL
-
-URL: [Your deployed Streamlit app URL]
-
-Database: Supabase PostgreSQL with Session Pooler
-
-Version: v1.0.0
-
-Status: Production Ready
-
-Production Readiness Checklist
-✅ Database connection optimized with Session Pooler
-
-✅ AI integration with Google Gemini
-
-✅ Enterprise-grade architecture
-
-✅ Comprehensive error handling
-
-✅ Secure configuration with environment variables
-
-✅ Responsive web interface
-
-✅ Real-time analytics dashboard
+## 📊 Employee Performance Distribution
 
 <div align="center">
-Built by Muhammad Rafil Fauzi
 
-Enterprise-grade Talent Intelligence for Modern Organizations
+| Performance Level | Employees | Percentage | Classification |
+|-------------------|-----------|------------|----------------|
+| 🏆 **High Performer** | 170 | 8.5% | **Top Talent** |
+| ⭐ **Solid Performer** | 486 | 24.2% | **Reliable** |
+| 📈 **Developing Performer** | 1,354 | 67.4% | **Growth Potential** |
 
-Last Updated: November 2024 | Version: 1.0.0
+</div>
+
+### 🔍 Key Findings
+
+- **85.6%** of workforce are high performers (Rating 4-5)
+- **11% competency gap** between top vs strong performers
+- **Strategic thinking** dominates top performer profiles
+- **Negligible correlation** between cognitive scores and performance
+
+## 🎯 Business Impact
+
+## 📈 Business Impact
+
+<div align="center">
+
+| Metric | Improvement | Impact |
+|--------|-------------|--------|
+| **Talent Identification** | 🎯 **8.5% Precision** | Accurate high-performer targeting |
+| **Succession Planning** | ⏩ **Data-Driven** | Based on 2,010 employee analysis |
+| **Development Focus** | 📈 **67.4% Coverage** | Large developing performer pool |
+| **Decision Accuracy** | 📊 **Empirical** | Reduced subjective assessment |
+
+</div>
+
+## 🔧 Development
+
+### Project Structure
+```
+talent-match-intelligence/
+├── 🎯 talent-app/
+│   ├── app.py                 # Main application
+│   ├── db_connection.py       # Database layer
+│   ├── requirements.txt       # Dependencies
+│   └── runtime.txt           # Python version
+├── 📊 dbt/                    # Data models (364 files)
+└── 📚 docs/                   # Documentation
+```
+
+### Running Tests
+```bash
+# Test database connection
+python test_connection.py
+```
+
+### Code Quality
+- ✅ PEP 8 Compliance
+- ✅ Comprehensive Error Handling
+- ✅ Type Hints Implementation
+- ✅ Security Best Practices
+
+## 📊 Data Architecture
+
+### Source Systems
+- **Employee Master Data** (2,010 records)
+- **Performance Management** (10,050 ratings)
+- **Competency Framework** (100,500 assessments)
+- **Psychometric Profiles** (Multiple instruments)
+- **Behavioral Analytics** (28,140 data points)
+
+### Processing Pipeline
+1. **Data Ingestion** → Raw data collection
+2. **Cleaning & Validation** → Quality assurance
+3. **Feature Engineering** → 90-5-5 scoring
+4. **AI Analysis** → Gemini insights generation
+5. **Visualization** → Streamlit dashboard
+
+
+## 📄 License
+
+This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Team & Acknowledgments
+
+<div align="center">
+
+### Built by Muhammad Rafil Fauzi
+
+[![Email](https://img.shields.io/badge/📧_Email-mrafifauzi03@gmail.com-8B89CC?style=flat-square)](mailto:mrafifauzi03@gmail.com)
+[![LinkedIn](https://img.shields.io/badge/💼_LinkedIn-Connect_Here-0A66C2?style=flat-square)](www.linkedin.com/in/muhamad-rafli-fauzi)
+
+### Special Thanks To
+- **Rakamin Academy** - Case study opportunity
+- **Supabase** - Reliable database hosting
+- **Google Gemini** - Advanced AI capabilities
+- **Streamlit** - Rapid application development framework
+
+</div>
+
+## 🆘 Support & Issues
+
+<div align="center">
+
+### Need Help?
+
+[![Documentation](https://img.shields.io/badge/📚_Docs-Read_Here-4A90E2?style=for-the-badge)](docs/)
+[![Report Bug](https://img.shields.io/badge/🐛_Report_Bug-GitHub_Issues-FF4B4B?style=for-the-badge)](https://github.com/Opticinn/talent-match-intelligence/issues)
+[![Feature Request](https://img.shields.io/badge/💡_Request_Feature-Suggest_Here-2EA44F?style=for-the-badge)](https://github.com/Opticinn/talent-match-intelligence/issues/new)
+
+</div>
+
+---
+
+---
+
+<div align="center">
+
+## 🚀 Live Demo Available!
+
+[![Live Demo Button](https://img.shields.io/badge/🎯_TRY_IT_NOW-Live_Demo-FF6B6B?style=for-the-badge&logo=streamlit&logoColor=white)](https://gkyvahxulkbu4eyfsbfrng.streamlit.app/)
+
+**Transform Your Talent Management with AI-Powered Insights**
+
+*Last Updated: November 2025 | Version 4.0.0 | Production Ready ✅*
 
 </div>
