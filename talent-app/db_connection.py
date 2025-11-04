@@ -11,74 +11,54 @@ import urllib.parse
 warnings.filterwarnings('ignore')
 load_dotenv()
 
+
 def get_db_connection():
-    """Get database connection using pg8000 (pure Python)"""
     try:
-        import pg8000
+        # Baca dari Streamlit Secrets
+        if 'postgres' in st.secrets:
+            secrets = st.secrets.postgres
+            connection_string = f"postgresql://{secrets['username']}:{secrets['password']}@{secrets['host']}:{secrets['port']}/{secrets['database']}"
+        else:
+            # Fallback untuk local development
+            connection_string = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', 5432)}/{os.getenv('DB_NAME')}"
         
-        database_url = os.getenv("DATABASE_URL")
-        if database_url:
-            # Parse DATABASE_URL
-            parsed = urllib.parse.urlparse(database_url)
-            
-            # Extract components
-            username = parsed.username or "postgres"
-            password = parsed.password or ""
-            hostname = parsed.hostname or "localhost"
-            port = parsed.port or 5432
-            database = parsed.path[1:] or "postgres"  # Remove leading slash
-            
-            print(f"🔗 Connecting to: {hostname}")
-            
-            return pg8000.connect(
-                user=username,
-                password=password,
-                host=hostname,
-                port=port,
-                database=database
-            )
-        
-        # Fallback to individual parameters
-        return pg8000.connect(
-            user=os.getenv("DB_USER", "postgres"),
-            password=os.getenv("DB_PASSWORD", ""),
-            host=os.getenv("DB_HOST", "localhost"),
-            port=int(os.getenv("DB_PORT", "5432")),
-            database=os.getenv("DB_NAME", "postgres")
-        )
-        
-    except ImportError as e:
-        print(f"❌ pg8000 import error: {e}")
-        return None
+        engine = create_engine(connection_string)
+        return engine
     except Exception as e:
-        print(f"❌ Database connection error: {e}")
+        st.error(f"Database connection error: {e}")
         return None
 
 def execute_query(query, params=None):
-    """Execute SQL query and return results"""
-    conn = get_db_connection()
-    if conn is None:
-        print("❌ No database connection")
+    engine = get_db_connection()
+    if engine is None:
+        st.error("❌ Tidak dapat terhubung ke database. Periksa koneksi dan secrets.")
         return None
         
     try:
-        if query.strip().upper().startswith('SELECT'):
-            df = pd.read_sql_query(query, conn)
-            print(f"✅ Query executed, returned {len(df)} rows")
-            return df
-        else:
-            with conn.cursor() as cursor:
-                cursor.execute(query, params or {})
-                conn.commit()
-                print("✅ Non-SELECT query executed successfully")
-                return True
-    except Exception as e:
-        print(f"❌ Query error: {e}")
-        print(f"❌ Query: {query[:100]}...")
+        with engine.connect() as conn:
+            if params:
+                result = conn.execute(text(query), params)
+            else:
+                result = conn.execute(text(query))
+            
+            if result.returns_rows:
+                df = pd.DataFrame(result.fetchall(), columns=result.keys())
+                return df
+            else:
+                return None
+    except SQLAlchemyError as e:
+        st.error(f"Query execution error: {e}")
         return None
     finally:
-        if conn:
-            conn.close()
+        if engine:
+            engine.dispose()
+
+# Fungsi untuk mendapatkan Gemini API Key
+def get_gemini_api_key():
+    if 'gemini' in st.secrets:
+        return st.secrets.gemini['api_key']
+    else:
+        return os.getenv('GEMINI_API_KEY')
 
 
 def get_available_roles():

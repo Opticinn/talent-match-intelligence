@@ -82,7 +82,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if GEMINI_API_KEY and GEMINI_API_KEY != "your_api_key_here":
     try:
-        genai.configure(api_key=GEMINI_API_KEY)
+        genai.configure(api_key=get_gemini_api_key())
         MODEL_NAME = 'gemini-2.0-flash'
         AI_ENABLED = True
         print(f"Using model: {MODEL_NAME}")
@@ -1060,6 +1060,34 @@ def main():
         - **Kognitif**: 5%  
         - **Performance**: 5%
         """)
+        
+        with st.sidebar:
+            st.subheader("🔧 Debug Info")
+            
+            # Cek database connection
+            if st.button("Test Database Connection"):
+                from db_connection import get_db_connection
+                engine = get_db_connection()
+                if engine:
+                    try:
+                        with engine.connect() as conn:
+                            conn.execute(text("SELECT 1"))
+                        st.success("✅ Database connected!")
+                    except Exception as e:
+                        st.error(f"❌ Database error: {e}")
+                else:
+                    st.error("❌ No database connection")
+            
+            # Cek secrets
+            if 'postgres' in st.secrets:
+                st.info("✅ Postgres secrets found")
+            else:
+                st.error("❌ No postgres secrets")
+            
+            if 'gemini' in st.secrets:
+                st.info("✅ Gemini secrets found")
+            else:
+                st.warning("⚠️ No Gemini secrets")
 
         with st.expander("📖 Jelaskan Lebih Detail"):
             st.markdown("""
