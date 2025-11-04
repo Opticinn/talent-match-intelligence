@@ -66,12 +66,6 @@ except ImportError as e:
         return pd.DataFrame()  
 
 
-# Configure Gemini - PASTIKAN INI DIATAS
-try:
-    genai.configure(api_key=get_gemini_api_key())
-except Exception as e:
-    st.error(f"❌ Gemini configuration error: {e}")
-
 load_dotenv()
 
 # Your proven success formula weights - FIXED
@@ -1010,15 +1004,6 @@ def main():
         page_icon="🎯",
         layout="wide"
     )
-    
-    with st.sidebar:
-        st.subheader("🔧 Connection Status")
-        if st.button("Test Database Connection"):
-            test_data = get_employee_data()
-            if test_data is None or test_data.empty:
-                st.error("❌ Database connection failed")
-            else:
-                st.success(f"✅ Database connected! Found {len(test_data)} records")
     
     # DEBUG: Test database connection
     if 'debug_done' not in st.session_state:
