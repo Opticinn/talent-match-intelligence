@@ -9,6 +9,7 @@ import json
 import urllib.parse
 import psycopg2
 from psycopg2.extras import RealDictCursor
+import socket
 
 warnings.filterwarnings('ignore')
 load_dotenv()
@@ -16,9 +17,18 @@ load_dotenv()
 
 def get_db_connection():
     try:
-        # Untuk Streamlit Cloud
+        # Force IPv4 connection untuk menghindari IPv6 issue
+        host = "db.xjzgzjxkikzzqprlyytd.supabase.co"
+        
+        # Resolve host ke IPv4
+        try:
+            ipv4 = socket.getaddrinfo(host, 5432, socket.AF_INET, socket.SOCK_STREAM)[0][4][0]
+            print(f"Resolved {host} to IPv4: {ipv4}")
+        except:
+            ipv4 = host
+        
         conn = psycopg2.connect(
-            host="db.xjzgzjxkikzzqprlyytd.supabase.co",
+            host=ipv4,
             database="postgres",
             user="postgres", 
             password="postgres",
@@ -32,6 +42,7 @@ def get_db_connection():
 def execute_query(query, params=None):
     conn = get_db_connection()
     if conn is None:
+        print("❌ Database connection failed")
         return None
         
     try:
@@ -61,10 +72,13 @@ def get_gemini_api_key():
 
 # Fungsi untuk mendapatkan Gemini API Key
 def get_gemini_api_key():
-    if 'gemini' in st.secrets:
-        return st.secrets.gemini['api_key']
-    else:
-        return os.getenv('GEMINI_API_KEY')
+    try:
+        import streamlit as st
+        if hasattr(st, 'secrets') and 'gemini' in st.secrets:
+            return st.secrets.gemini['api_key']
+    except:
+        pass
+    return os.getenv('GEMINI_API_KEY', 'AIzaSyDSPcTh2Q3h4oRExh0I2PzyCX71YNOdxTM')
 
 
 def get_available_roles():

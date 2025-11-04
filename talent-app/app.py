@@ -50,7 +50,7 @@ import plotly.graph_objects as go
 import json
 from datetime import datetime
 import uuid
-from db_connection import execute_query, get_available_roles, get_employees_by_role, get_employee_data, save_benchmark_to_db, calculate_benchmark_baseline
+from db_connection import execute_query, get_available_roles, get_employees_by_role, get_employee_data, save_benchmark_to_db, calculate_benchmark_baseline, get_gemini_api_key
 import google.generativeai as genai
 import os
 from dotenv import load_dotenv
@@ -65,6 +65,12 @@ except ImportError as e:
     def execute_query(query, params=None):
         return pd.DataFrame()  
 
+
+# Configure Gemini - PASTIKAN INI DIATAS
+try:
+    genai.configure(api_key=get_gemini_api_key())
+except Exception as e:
+    st.error(f"❌ Gemini configuration error: {e}")
 
 load_dotenv()
 
@@ -1004,6 +1010,15 @@ def main():
         page_icon="🎯",
         layout="wide"
     )
+    
+    with st.sidebar:
+        st.subheader("🔧 Connection Status")
+        if st.button("Test Database Connection"):
+            test_data = get_employee_data()
+            if test_data is None or test_data.empty:
+                st.error("❌ Database connection failed")
+            else:
+                st.success(f"✅ Database connected! Found {len(test_data)} records")
     
     # DEBUG: Test database connection
     if 'debug_done' not in st.session_state:
