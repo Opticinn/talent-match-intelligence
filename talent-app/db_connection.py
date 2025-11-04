@@ -6,33 +6,49 @@ import pandas as pd
 from dotenv import load_dotenv
 import warnings
 import json
-
+import urllib.parse
 
 warnings.filterwarnings('ignore')
 load_dotenv()
 
 def get_db_connection():
-    """Get database connection dengan fallback handling"""
+    """Get database connection using pg8000 (pure Python)"""
     try:
-        # Coba import psycopg2
-        import psycopg2
+        import pg8000
         
         database_url = os.getenv("DATABASE_URL")
         if database_url:
-            print(f"🔗 Using DATABASE_URL")
-            return psycopg2.connect(database_url)
+            # Parse DATABASE_URL
+            parsed = urllib.parse.urlparse(database_url)
+            
+            # Extract components
+            username = parsed.username or "postgres"
+            password = parsed.password or ""
+            hostname = parsed.hostname or "localhost"
+            port = parsed.port or 5432
+            database = parsed.path[1:] or "postgres"  # Remove leading slash
+            
+            print(f"🔗 Connecting to: {hostname}")
+            
+            return pg8000.connect(
+                user=username,
+                password=password,
+                host=hostname,
+                port=port,
+                database=database
+            )
         
-        # Fallback ke individual parameters
-        return psycopg2.connect(
-            host=os.getenv("DB_HOST"),
-            database=os.getenv("DB_NAME", "postgres"),
+        # Fallback to individual parameters
+        return pg8000.connect(
             user=os.getenv("DB_USER", "postgres"),
-            password=os.getenv("DB_PASSWORD"),
-            port=os.getenv("DB_PORT", "5432")
+            password=os.getenv("DB_PASSWORD", ""),
+            host=os.getenv("DB_HOST", "localhost"),
+            port=int(os.getenv("DB_PORT", "5432")),
+            database=os.getenv("DB_NAME", "postgres")
         )
         
-    except ImportError:
-        print("⚠️ psycopg2 not available - using demo mode")
+    except ImportError as e:
+        print(f"❌ pg8000 import error: {e}")
         return None
     except Exception as e:
         print(f"❌ Database connection error: {e}")
@@ -52,17 +68,18 @@ def execute_query(query, params=None):
             return df
         else:
             with conn.cursor() as cursor:
-                cursor.execute(query, params)
+                cursor.execute(query, params or {})
                 conn.commit()
                 print("✅ Non-SELECT query executed successfully")
                 return True
     except Exception as e:
         print(f"❌ Query error: {e}")
-        print(f"❌ Query: {query[:100]}...")  # Print first 100 chars of query
+        print(f"❌ Query: {query[:100]}...")
         return None
     finally:
         if conn:
             conn.close()
+
 
 def get_available_roles():
     """Get distinct role names from database"""
