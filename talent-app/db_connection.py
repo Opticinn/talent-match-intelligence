@@ -7,8 +7,8 @@ from dotenv import load_dotenv
 import warnings
 import json
 import urllib.parse
-from sqlalchemy import create_engine, text
-from sqlalchemy.exc import SQLAlchemyError
+import psycopg2
+from psycopg2.extras import RealDictCursor
 
 warnings.filterwarnings('ignore')
 load_dotenv()
@@ -16,39 +16,45 @@ load_dotenv()
 
 def get_db_connection():
     try:
-        # Baca dari Streamlit Secrets atau environment variables
-        connection_string = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', 5432)}/{os.getenv('DB_NAME')}"
-        
-        engine = create_engine(connection_string)
-        return engine
+        # Untuk Streamlit Cloud
+        conn = psycopg2.connect(
+            host="db.xjzgzjxkikzzqprlyytd.supabase.co",
+            database="postgres",
+            user="postgres", 
+            password="postgres",
+            port=5432
+        )
+        return conn
     except Exception as e:
-        # Hanya print error, tidak menggunakan st.error
         print(f"Database connection error: {e}")
         return None
 
 def execute_query(query, params=None):
-    engine = get_db_connection()
-    if engine is None:
+    conn = get_db_connection()
+    if conn is None:
         return None
         
     try:
-        with engine.connect() as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cursor:
             if params:
-                result = conn.execute(text(query), params)
+                cursor.execute(query, params)
             else:
-                result = conn.execute(text(query))
+                cursor.execute(query)
             
-            if result.returns_rows:
-                df = pd.DataFrame(result.fetchall(), columns=result.keys())
+            # Jika query mengembalikan hasil
+            if cursor.description:
+                result = cursor.fetchall()
+                df = pd.DataFrame(result)
                 return df
             else:
+                conn.commit()
                 return None
-    except SQLAlchemyError as e:
+    except Exception as e:
         print(f"Query execution error: {e}")
         return None
     finally:
-        if engine:
-            engine.dispose()
+        if conn:
+            conn.close()
 
 def get_gemini_api_key():
     return os.getenv('GEMINI_API_KEY')
