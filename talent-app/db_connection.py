@@ -16,46 +16,23 @@ load_dotenv()
 
 
 def get_db_connection():
-    connection_attempts = [
-        # Attempt 1: Direct connection string
-        lambda: psycopg2.connect("postgresql://postgres:postgres@db.xjzgzjxkikzzqprlyytd.supabase.co:5432/postgres"),
+    try:
+        # GUNAKAN SESSION POOLER YANG BENAR
+        # Format: postgresql://postgres.[project-ref]:[password]@[pooler-host]:5432/postgres
+        connection_string = "postgresql://postgres.xjzgzjxkikzzqprlyytd:postgres@aws-1-ap-southeast-2.pooler.supabase.com:5432/postgres?sslmode=require"
         
-        # Attempt 2: Individual parameters
-        lambda: psycopg2.connect(
-            host="db.xjzgzjxkikzzqprlyytd.supabase.co",
-            database="postgres",
-            user="postgres",
-            password="postgres",
-            port=5432
-        ),
-        
-        # Attempt 3: With timeout and keepalive
-        lambda: psycopg2.connect(
-            host="db.xjzgzjxkikzzqprlyytd.supabase.co",
-            database="postgres",
-            user="postgres",
-            password="postgres",
-            port=5432,
+        conn = psycopg2.connect(
+            connection_string,
             connect_timeout=10,
-            keepalives=1,
-            keepalives_idle=30,
-            keepalives_interval=10,
-            keepalives_count=5
+            sslmode='require'
         )
-    ]
-    
-    for i, attempt in enumerate(connection_attempts):
-        try:
-            print(f"🔧 Connection attempt {i+1}...")
-            conn = attempt()
-            print("✅ Database connected successfully!")
-            return conn
-        except Exception as e:
-            print(f"❌ Attempt {i+1} failed: {e}")
-            continue
-    
-    print("❌ All connection attempts failed")
-    return None
+        
+        print("✅ Database connected successfully via Session Pooler!")
+        return conn
+        
+    except Exception as e:
+        print(f"❌ Session Pooler connection failed: {e}")
+        return None
 
 def execute_query(query, params=None):
     conn = get_db_connection()
