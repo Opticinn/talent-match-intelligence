@@ -7,6 +7,8 @@ from dotenv import load_dotenv
 import warnings
 import json
 import urllib.parse
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 
 warnings.filterwarnings('ignore')
 load_dotenv()
@@ -14,24 +16,19 @@ load_dotenv()
 
 def get_db_connection():
     try:
-        # Baca dari Streamlit Secrets
-        if 'postgres' in st.secrets:
-            secrets = st.secrets.postgres
-            connection_string = f"postgresql://{secrets['username']}:{secrets['password']}@{secrets['host']}:{secrets['port']}/{secrets['database']}"
-        else:
-            # Fallback untuk local development
-            connection_string = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', 5432)}/{os.getenv('DB_NAME')}"
+        # Baca dari Streamlit Secrets atau environment variables
+        connection_string = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', 5432)}/{os.getenv('DB_NAME')}"
         
         engine = create_engine(connection_string)
         return engine
     except Exception as e:
-        st.error(f"Database connection error: {e}")
+        # Hanya print error, tidak menggunakan st.error
+        print(f"Database connection error: {e}")
         return None
 
 def execute_query(query, params=None):
     engine = get_db_connection()
     if engine is None:
-        st.error("❌ Tidak dapat terhubung ke database. Periksa koneksi dan secrets.")
         return None
         
     try:
@@ -47,11 +44,14 @@ def execute_query(query, params=None):
             else:
                 return None
     except SQLAlchemyError as e:
-        st.error(f"Query execution error: {e}")
+        print(f"Query execution error: {e}")
         return None
     finally:
         if engine:
             engine.dispose()
+
+def get_gemini_api_key():
+    return os.getenv('GEMINI_API_KEY')
 
 # Fungsi untuk mendapatkan Gemini API Key
 def get_gemini_api_key():
