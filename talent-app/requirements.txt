@@ -1,8 +1,7 @@
-# requirements.txt
 streamlit==1.28.0
 pandas==2.0.3
 plotly==5.15.0
 sqlalchemy==2.0.0
-pg8000==1.30.0
+pg8000==1.31.5  # ← GUNAKAN VERSI YANG TERSEDIA
 python-dotenv==1.0.0
 google-generativeai==0.3.0
