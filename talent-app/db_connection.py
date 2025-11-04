@@ -6,45 +6,66 @@ import pandas as pd
 from dotenv import load_dotenv
 import warnings
 import json
-import pg8000
+
 
 warnings.filterwarnings('ignore')
 load_dotenv()
 
 def get_db_connection():
-    """Get database connection dengan fallback untuk Streamlit Cloud"""
+    """Get database connection untuk Supabase Cloud"""
     try:
-        import psycopg2
-        # Your existing connection code
+        # Option 1: Gunakan DATABASE_URL dari environment variable
+        database_url = os.getenv("DATABASE_URL")
+        if database_url:
+            print(f"🔗 Using DATABASE_URL: {database_url.split('@')[1] if '@' in database_url else 'hidden'}")
+            return psycopg2.connect(database_url)
+        
+        # Option 2: Gunakan individual parameters (fallback)
+        db_host = os.getenv("DB_HOST", "db.your-project.supabase.co")
+        db_name = os.getenv("DB_NAME", "postgres")
+        db_user = os.getenv("DB_USER", "postgres")
+        db_password = os.getenv("DB_PASSWORD", "your-password")
+        db_port = os.getenv("DB_PORT", "5432")
+        
+        print(f"🔗 Connecting to: {db_host}")
+        
         return psycopg2.connect(
-            host="127.0.0.1",
-            database="postgres", 
-            user="postgres",
-            password="postgres",
-            port="54322"
+            host=db_host,
+            database=db_name,
+            user=db_user,
+            password=db_password,
+            port=db_port
         )
-    except ImportError:
-        print("⚠️ psycopg2 not available - using demo mode")
+        
+    except Exception as e:
+        print(f"❌ Database connection error: {e}")
         return None
-
 
 def execute_query(query, params=None):
     """Execute SQL query and return results"""
     conn = get_db_connection()
+    if conn is None:
+        print("❌ No database connection")
+        return None
+        
     try:
         if query.strip().upper().startswith('SELECT'):
             df = pd.read_sql_query(query, conn)
+            print(f"✅ Query executed, returned {len(df)} rows")
             return df
         else:
             with conn.cursor() as cursor:
                 cursor.execute(query, params)
                 conn.commit()
+                print("✅ Non-SELECT query executed successfully")
                 return True
     except Exception as e:
-        print(f"Query error: {e}")
+        print(f"❌ Query error: {e}")
+        print(f"❌ Query: {query[:100]}...")  # Print first 100 chars of query
         return None
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 def get_available_roles():
     """Get distinct role names from database"""
@@ -310,54 +331,53 @@ def get_employee_details(employee_ids):
     return execute_query(query)
 
 def get_comprehensive_employee_data():
-    """Get employee data dengan 3 komponen Success Formula"""
-    query = """
-    SELECT 
-        e.employee_id,
-        e.fullname,
-        p.name as current_role,
-        d.name as department, 
-        dir.name as directorate,
-        g.name as job_level,
+    """Get employee data dengan error handling"""
+    try:
+        query = """
+        SELECT 
+            e.employee_id,
+            e.fullname,
+            p.name as current_role,
+            d.name as department, 
+            dir.name as directorate,
+            g.name as job_level,
+            COALESCE(comp.avg_competency, 0) as avg_competency,
+            COALESCE(pp.cognitive_norm, 0.5) as cognitive_norm,
+            COALESCE(perf.rating_imputed, 3.0) as performance_rating
+        FROM raw.employees e
+        LEFT JOIN raw.dim_positions p ON e.position_id = p.position_id
+        LEFT JOIN raw.dim_departments d ON e.department_id = d.department_id
+        LEFT JOIN raw.dim_directorates dir ON e.directorate_id = dir.directorate_id
+        LEFT JOIN raw.dim_grades g ON e.grade_id = g.grade_id
+        LEFT JOIN staging.stg_profiles_psych_norm pp ON e.employee_id = pp.employee_id
+        LEFT JOIN (
+            SELECT employee_id, AVG(score_imputed) as avg_competency
+            FROM staging.int_competencies_imputed 
+            GROUP BY employee_id
+        ) comp ON e.employee_id = comp.employee_id
+        LEFT JOIN (
+            SELECT employee_id, MAX(rating_imputed) as rating_imputed
+            FROM staging.int_performance_imputed
+            GROUP BY employee_id
+        ) perf ON e.employee_id = perf.employee_id
+        GROUP BY 
+            e.employee_id, e.fullname, p.name, d.name, dir.name, g.name,
+            comp.avg_competency, pp.cognitive_norm, perf.rating_imputed
+        ORDER BY e.fullname
+        LIMIT 200
+        """
         
-        -- 3 KOMPONEN UTAMA SUCCESS FORMULA
-        COALESCE(comp.avg_competency, 0) as avg_competency,
-        COALESCE(pp.cognitive_norm, 0.5) as cognitive_norm,
-        COALESCE(perf.rating_imputed, 3.0) as performance_rating,
-        
-        -- Data tambahan untuk analisis (bukan bagian scoring)
-        pp.mbti_norm,
-        pp.disc_norm,
-        COUNT(DISTINCT s.theme) as strengths_count
-        
-    FROM raw.employees e
-    LEFT JOIN raw.dim_positions p ON e.position_id = p.position_id
-    LEFT JOIN raw.dim_departments d ON e.department_id = d.department_id
-    LEFT JOIN raw.dim_directorates dir ON e.directorate_id = dir.directorate_id
-    LEFT JOIN raw.dim_grades g ON e.grade_id = g.grade_id
-    LEFT JOIN staging.stg_profiles_psych_norm pp ON e.employee_id = pp.employee_id
-    LEFT JOIN (
-        SELECT employee_id, AVG(score_imputed) as avg_competency
-        FROM staging.int_competencies_imputed 
-        GROUP BY employee_id
-    ) comp ON e.employee_id = comp.employee_id
-    LEFT JOIN (
-        SELECT employee_id, MAX(rating_imputed) as rating_imputed
-        FROM staging.int_performance_imputed
-        GROUP BY employee_id
-    ) perf ON e.employee_id = perf.employee_id
-    LEFT JOIN raw.strengths s ON e.employee_id = s.employee_id
-    GROUP BY 
-        e.employee_id, e.fullname, p.name, d.name, dir.name, g.name,
-        comp.avg_competency, pp.cognitive_norm, perf.rating_imputed,
-        pp.mbti_norm, pp.disc_norm
-    ORDER BY perf.rating_imputed DESC NULLS LAST, e.fullname
-    LIMIT 200  -- Increase limit untuk coverage lebih baik
-    """
-    
-    result = execute_query(query)
-    print(f"✅ Comprehensive data (3-component): {len(result) if result is not None else 0} employees")
-    return result
+        result = execute_query(query)
+        if result is not None:
+            print(f"✅ Loaded {len(result)} employees from Supabase Cloud")
+            return result
+        else:
+            print("❌ Query returned None")
+            return pd.DataFrame()
+            
+    except Exception as e:
+        print(f"❌ Error in get_comprehensive_employee_data: {e}")
+        return pd.DataFrame()
 
 
 def execute_talent_matching_sql(benchmark_ids, weights_config=None):

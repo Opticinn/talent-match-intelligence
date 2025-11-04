@@ -57,6 +57,14 @@ from dotenv import load_dotenv
 from db_connection import get_comprehensive_employee_data
 
 
+try:
+    from db_connection import execute_query, get_available_roles, get_employee_data, get_comprehensive_employee_data
+except ImportError as e:
+    st.error(f"❌ Database module import error: {e}")
+    # Fallback functions
+    def execute_query(query, params=None):
+        return pd.DataFrame()  
+
 
 load_dotenv()
 
